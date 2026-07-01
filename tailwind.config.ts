@@ -49,6 +49,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "Georgia", "serif"],
+        wordmark: ["var(--font-wordmark)", "system-ui", "sans-serif"],
       },
       letterSpacing: {
         luxe: "0.28em",

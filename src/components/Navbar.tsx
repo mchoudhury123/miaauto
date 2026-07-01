@@ -64,10 +64,10 @@ export default function Navbar() {
               className="h-14 w-14 object-contain md:h-[64px] md:w-[64px]"
             />
             <span className="flex flex-col leading-none">
-              <span className="font-display text-lg font-semibold tracking-tight text-cream-50">
+              <span className="font-wordmark text-lg font-medium uppercase tracking-[0.2em] text-cream-50">
                 {SITE.name}
               </span>
-              <span className="mt-0.5 text-[9px] font-semibold uppercase tracking-luxe text-gold-500">
+              <span className="mt-1 font-wordmark text-[9px] font-medium uppercase tracking-[0.3em] text-gold-500">
                 Premium Cars
               </span>
             </span>

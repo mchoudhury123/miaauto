@@ -26,7 +26,7 @@ export default function Footer() {
                 height={56}
                 className="h-14 w-14 object-contain"
               />
-              <span className="font-display text-2xl font-semibold text-cream-50">
+              <span className="font-wordmark text-xl font-medium uppercase tracking-[0.2em] text-cream-50">
                 {SITE.name}
               </span>
             </div>

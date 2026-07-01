@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { Fraunces, Manrope, Montserrat } from "next/font/google";
 import "./globals.css";
 import { SITE } from "@/lib/constants";
 
@@ -13,6 +13,12 @@ const fraunces = Fraunces({
 const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
+});
+// Geometric sans for the brand wordmark (matches the logo lettering).
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-wordmark",
   display: "swap",
 });
 
@@ -43,7 +49,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${manrope.variable} ${fraunces.variable}`}>
+    <html
+      lang="en"
+      className={`${manrope.variable} ${fraunces.variable} ${montserrat.variable}`}
+    >
       <body>{children}</body>
     </html>
   );
