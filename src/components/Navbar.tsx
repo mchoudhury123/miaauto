@@ -1,0 +1,141 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Menu, X, Phone, MessageCircle, Instagram } from "lucide-react";
+import { cn, telUrl, whatsappUrl } from "@/lib/utils";
+import { SITE } from "@/lib/constants";
+
+const LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/inventory", label: "Showroom" },
+  { href: "/contact", label: "Contact" },
+];
+
+export default function Navbar() {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  // Close the mobile menu on navigation.
+  useEffect(() => setOpen(false), [pathname]);
+
+  return (
+    <header className="absolute inset-x-0 top-0 z-50">
+      {/* Announcement strip */}
+      <div className="hidden border-b border-white/10 bg-ink-950 text-[11px] tracking-[0.18em] text-cream-200/80 md:block">
+        <div className="container-px flex h-9 items-center justify-between font-medium uppercase">
+          <span>South Shields · Hand-selected stock, sold with confidence</span>
+          <div className="flex items-center gap-4">
+            <a
+              href={SITE.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 transition-colors hover:text-gold-400"
+              aria-label="Instagram"
+            >
+              <Instagram className="h-3.5 w-3.5" />
+              Instagram
+            </a>
+            <a
+              href={whatsappUrl(`Hi ${SITE.name}, I have an enquiry.`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 transition-colors hover:text-gold-400"
+            >
+              <MessageCircle className="h-3.5 w-3.5" />
+              WhatsApp us
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Main bar — consistent, pinned, never changes on scroll */}
+      <div className="border-b border-white/10 bg-ink-950/85 backdrop-blur-xl">
+        <nav className="container-px flex h-16 items-center justify-between md:h-[72px]">
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/logo.png?v=2"
+              alt={`${SITE.name} logo`}
+              width={72}
+              height={72}
+              priority
+              className="h-14 w-14 object-contain md:h-[64px] md:w-[64px]"
+            />
+            <span className="flex flex-col leading-none">
+              <span className="font-display text-lg font-semibold tracking-tight text-cream-50">
+                {SITE.name}
+              </span>
+              <span className="mt-0.5 text-[9px] font-semibold uppercase tracking-luxe text-gold-500">
+                Premium Cars
+              </span>
+            </span>
+          </Link>
+
+          <div className="hidden items-center gap-1 md:flex">
+            {LINKS.map((l) => {
+              const active =
+                l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className={cn(
+                    "relative px-4 py-2 text-sm font-medium transition-colors",
+                    active
+                      ? "text-gold-400"
+                      : "text-cream-100 hover:text-gold-400",
+                  )}
+                >
+                  {l.label}
+                  {active && (
+                    <span className="absolute inset-x-4 -bottom-0.5 h-px bg-gold-500" />
+                  )}
+                </Link>
+              );
+            })}
+            <a href={telUrl()} className="btn-primary ml-3">
+              <Phone className="h-4 w-4" />
+              {SITE.phone}
+            </a>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            className="rounded-full p-2 text-cream-50 transition hover:bg-white/10 md:hidden"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+          >
+            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </nav>
+      </div>
+
+      {/* Mobile menu */}
+      <div
+        className={cn(
+          "overflow-hidden bg-ink-950 transition-all duration-300 md:hidden",
+          open ? "max-h-96 border-b border-white/10" : "max-h-0",
+        )}
+      >
+        <div className="container-px flex flex-col gap-1 py-4">
+          {LINKS.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="rounded-xl px-4 py-3 text-base font-medium text-cream-100 hover:bg-white/10"
+            >
+              {l.label}
+            </Link>
+          ))}
+          <a href={telUrl()} className="btn-primary mt-2">
+            <Phone className="h-4 w-4" />
+            Call {SITE.phone}
+          </a>
+        </div>
+      </div>
+    </header>
+  );
+}

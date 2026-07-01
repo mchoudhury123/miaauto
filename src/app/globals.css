@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #0b0b0d;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-cream-50 text-ink-900 antialiased;
+    font-feature-settings: "ss01", "cv01";
+  }
+  ::selection {
+    @apply bg-gold-500/25 text-ink-900;
+  }
+  /* Refined custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-ink-100;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-ink-300;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-ink-400;
+  }
+  h1, h2, h3 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  /* ---------- Buttons ---------- */
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold
+      tracking-wide transition-all duration-300 ease-out focus:outline-none
+      focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2
+      disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply btn bg-gold-500 text-ink-950 hover:-translate-y-0.5 hover:bg-gold-400
+      hover:shadow-[0_14px_30px_-10px_rgba(200,164,92,0.6)];
+  }
+  .btn-dark {
+    @apply btn bg-ink-950 text-cream-50 hover:-translate-y-0.5 hover:bg-ink-800 hover:shadow-luxe-sm;
+  }
+  .btn-outline {
+    @apply btn border border-ink-300/70 bg-transparent text-ink-900 hover:border-ink-900 hover:bg-ink-950 hover:text-cream-50;
+  }
+  .btn-ghost {
+    @apply btn text-ink-700 hover:bg-ink-100;
+  }
+  .btn-whatsapp {
+    @apply btn bg-[#25D366] text-white hover:-translate-y-0.5 hover:bg-[#1ebe5d];
+  }
+
+  /* ---------- Form controls ---------- */
+  .input {
+    @apply w-full rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-sm text-ink-900
+      placeholder:text-ink-400 transition focus:border-gold-500 focus:outline-none
+      focus:ring-2 focus:ring-gold-500/25;
+  }
+  .label {
+    @apply mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-500;
+  }
+
+  /* ---------- Layout helpers ---------- */
+  .container-px {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10;
+  }
+  .card {
+    @apply rounded-2xl border border-ink-100 bg-white shadow-sm transition duration-500;
+  }
+
+  /* ---------- Decorative ---------- */
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
+  }
+  /* Eyebrow / kicker label */
+  .eyebrow {
+    @apply inline-flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-luxe text-gold-600;
+  }
+  .eyebrow::before {
+    @apply h-px w-8 bg-gold-500/60;
+    content: "";
+  }
+  .eyebrow-center::before,
+  .eyebrow-center::after {
+    @apply h-px w-8 bg-gold-500/60;
+    content: "";
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  /* Gold metallic gradient text */
+  .text-gold-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      100deg,
+      #ad8542 0%,
+      #e9d7ad 25%,
+      #c8a45c 50%,
+      #f4ecd8 70%,
+      #c8a45c 100%
+    );
+    background-size: 200% auto;
+  }
+  /* Subtle film-grain / noise overlay for dark sections */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  }
+  /* Hairline divider used in editorial sections */
+  .hairline {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-ink-200 to-transparent;
+  }
+  /* Loading shimmer for skeletons */
+  .skeleton {
+    @apply relative overflow-hidden bg-ink-100;
+  }
+  .skeleton::after {
+    @apply absolute inset-0 -translate-x-full animate-shimmer
+      bg-gradient-to-r from-transparent via-white/60 to-transparent;
+    content: "";
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 12%,
+      black 88%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 12%,
+      black 88%,
+      transparent
+    );
+  }
+}

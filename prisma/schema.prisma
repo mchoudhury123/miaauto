@@ -1,0 +1,103 @@
+// MIA Automotive — database schema
+// SQLite for zero-config local dev. To move to Postgres: change provider to
+// "postgresql" and DATABASE_URL, then `prisma migrate dev`.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Pooled connection (Supabase pooler, port 6543) — used by the app at runtime.
+  url       = env("DATABASE_URL")
+  // Direct connection (port 5432) — used by prisma migrate / db push.
+  directUrl = env("DIRECT_URL")
+}
+
+model Car {
+  id           String   @id @default(cuid())
+  // Identity
+  make         String
+  model        String
+  variant      String? // e.g. "M Sport", "S line"
+  year         Int // model year, e.g. 2021
+  regYear      String? // registration plate, e.g. "21" or "AB21 XYZ"
+  // Numbers
+  mileage      Int
+  price        Int // whole GBP, no pennies
+  doors        Int?
+  seats        Int?
+  previousOwners Int?
+  bootSpace    Int? // litres
+  taxPerYear   Int? // £ per year (VED)
+  insuranceGroup Int? // 1–50
+  // Specs (stored as strings; allowed values enforced in app constants)
+  fuelType     String // Petrol, Diesel, Hybrid, Electric, ...
+  transmission String // Manual, Automatic
+  bodyType     String // Hatchback, Saloon, SUV, ...
+  colour       String
+  engineSize   String? // e.g. "2.0L"
+  // Compliance / history
+  ulez         Boolean  @default(true) // ULEZ compliant
+  motMonths    Int? // months of MOT remaining
+  serviceHistory String? // Full, Part, None, ...
+  // Copy
+  description    String? // long form
+  conditionNotes String?
+  // Merchandising
+  status   String  @default("available") // available | reserved | sold
+  featured Boolean @default(false)
+
+  images   CarImage[]
+  features Feature[]
+  enquiries Enquiry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([make])
+  @@index([price])
+  @@index([year])
+}
+
+model CarImage {
+  id     String  @id @default(cuid())
+  url    String
+  alt    String?
+  isMain Boolean @default(false)
+  order  Int     @default(0)
+
+  carId String
+  car   Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
+
+  @@index([carId])
+}
+
+model Feature {
+  id    String @id @default(cuid())
+  name  String
+
+  carId String
+  car   Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
+
+  @@index([carId])
+}
+
+model Enquiry {
+  id      String  @id @default(cuid())
+  name    String
+  email   String
+  phone   String?
+  message String
+  status  String  @default("new") // new | read | archived
+
+  // Optional link to a specific car
+  carId String?
+  car   Car?    @relation(fields: [carId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([status])
+  @@index([carId])
+}
