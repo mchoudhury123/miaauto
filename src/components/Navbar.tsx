@@ -11,6 +11,7 @@ import { SITE } from "@/lib/constants";
 const LINKS = [
   { href: "/", label: "Home" },
   { href: "/inventory", label: "Showroom" },
+  { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
 
