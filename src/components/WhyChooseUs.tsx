@@ -23,7 +23,7 @@ const ITEMS = [
   {
     icon: Handshake,
     title: "No-pressure buying",
-    body: "We sell directly — no pushy tactics, no finance gimmicks, just straight answers.",
+    body: "We sell directly — no pushy tactics, no jargon, just straight answers.",
   },
   {
     icon: Sparkles,

@@ -52,8 +52,8 @@ export default async function HomePage() {
             </h1>
             <p className="mt-7 max-w-xl animate-fade-in text-lg leading-relaxed text-cream-100/85 [animation-delay:160ms]">
               A curated collection of premium used cars — hand-selected,
-              meticulously prepared and sold directly with complete
-              transparency. No finance gimmicks. Just exceptional cars.
+              meticulously prepared and sold with complete transparency. No
+              pressure, no gimmicks — just exceptional cars.
             </p>
             <div className="mt-9 flex animate-fade-in flex-col gap-3 sm:flex-row [animation-delay:240ms]">
               <Link href="/inventory" className="btn-primary w-full sm:w-auto">
@@ -180,7 +180,7 @@ export default async function HomePage() {
                 ["Hand-selected", "Only the cars we'd buy ourselves make the cut."],
                 ["Fully prepared", "Detailed, inspected and ready before listing."],
                 ["Total transparency", "Full history and honest condition notes."],
-                ["No finance, no fuss", "Buy directly — call, message or visit."],
+                ["Dealer services", "Part exchange, finance support and warranty packages available."],
               ].map(([t, d]) => (
                 <div key={t} className="bg-ink-950 p-6">
                   <h3 className="font-display text-lg font-semibold text-gold-400">

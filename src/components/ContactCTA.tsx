@@ -20,7 +20,7 @@ export default function ContactCTA() {
           </h2>
           <p className="mx-auto mt-5 max-w-lg text-cream-100/80">
             Get in touch and we&apos;ll answer any questions, arrange a viewing
-            or hold the car for you. No finance, no fuss — just a friendly
+            or hold the car for you. No pressure, no fuss — just a friendly
             conversation.
           </p>
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
