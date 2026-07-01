@@ -91,13 +91,17 @@ export default function ContactPage() {
             </ul>
           </div>
 
-          {/* Map placeholder */}
-          <div className="mt-6 flex aspect-[16/9] items-center justify-center rounded-3xl border border-dashed border-ink-200 bg-cream-100 text-center">
-            <div className="flex flex-col items-center gap-2 text-ink-400">
-              <MapPin className="h-8 w-8" />
-              <p className="text-sm font-medium">{SITE.address}</p>
-              <p className="text-xs">Map embed placeholder</p>
-            </div>
+          {/* Map */}
+          <div className="mt-6 aspect-[16/9] overflow-hidden rounded-3xl border border-ink-100">
+            <iframe
+              title={`${SITE.name} location — South Shields`}
+              src="https://maps.google.com/maps?q=Simonside%20Industrial%20Estate%2C%20South%20Shields&z=15&output=embed"
+              className="h-full w-full"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
           </div>
         </div>
 
