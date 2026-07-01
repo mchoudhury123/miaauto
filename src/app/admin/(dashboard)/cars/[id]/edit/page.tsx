@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import CarForm from "@/components/admin/CarForm";
-import { getCarById } from "@/lib/cars";
+import { getCarById, getFilterFacets } from "@/lib/cars";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +9,10 @@ export default async function EditCarPage({
 }: {
   params: { id: string };
 }) {
-  const car = await getCarById(params.id);
+  const [car, { makes }] = await Promise.all([
+    getCarById(params.id),
+    getFilterFacets(),
+  ]);
   if (!car) notFound();
-  return <CarForm car={car} />;
+  return <CarForm car={car} makes={makes} />;
 }

@@ -77,9 +77,20 @@ function initialState(car?: CarWithRelations): FormState {
   };
 }
 
-export default function CarForm({ car }: { car?: CarWithRelations }) {
+export default function CarForm({
+  car,
+  makes = [],
+}: {
+  car?: CarWithRelations;
+  makes?: string[];
+}) {
   const router = useRouter();
   const isEdit = Boolean(car);
+
+  // Suggest makes already in the database first, then common UK makes.
+  const makeSuggestions = Array.from(
+    new Set([...makes, ...POPULAR_MAKES]),
+  ).sort();
 
   const [form, setForm] = useState<FormState>(() => initialState(car));
   const [features, setFeatures] = useState<string[]>(
@@ -194,7 +205,7 @@ export default function CarForm({ car }: { car?: CarWithRelations }) {
               placeholder="e.g. BMW"
             />
             <datalist id="makes">
-              {POPULAR_MAKES.map((m) => (
+              {makeSuggestions.map((m) => (
                 <option key={m} value={m} />
               ))}
             </datalist>

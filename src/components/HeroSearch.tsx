@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Search } from "lucide-react";
-import { POPULAR_MAKES } from "@/lib/constants";
 
 const PRICE_STEPS = [5000, 10000, 15000, 20000, 30000, 50000, 75000, 100000];
 const YEARS = Array.from({ length: 16 }, (_, i) => new Date().getFullYear() - i);
@@ -20,9 +19,9 @@ export default function HeroSearch({ makes }: { makes: string[] }) {
     mileageMax: "",
   });
 
-  const allMakes = Array.from(
-    new Set([...makes, ...POPULAR_MAKES]),
-  ).sort();
+  // Driven entirely by the makes actually in stock — grows automatically as
+  // the admin adds cars with new makes.
+  const allMakes = [...makes].sort();
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
