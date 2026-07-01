@@ -41,6 +41,13 @@ export const metadata: Metadata = {
     description: SITE.tagline,
     type: "website",
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-96x96.png", type: "image/png", sizes: "96x96" },
+    ],
+    apple: "/favicon-96x96.png",
+  },
 };
 
 export default function RootLayout({
