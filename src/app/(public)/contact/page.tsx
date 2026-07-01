@@ -95,7 +95,9 @@ export default function ContactPage() {
           <div className="mt-6 aspect-[16/9] overflow-hidden rounded-3xl border border-ink-100">
             <iframe
               title={`${SITE.name} location — South Shields`}
-              src="https://maps.google.com/maps?q=Simonside%20Industrial%20Estate%2C%20South%20Shields&z=15&output=embed"
+              src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                SITE.address,
+              )}&z=15&output=embed`}
               className="h-full w-full"
               style={{ border: 0 }}
               loading="lazy"

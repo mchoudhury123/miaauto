@@ -2,11 +2,12 @@
 
 export const SITE = {
   name: process.env.NEXT_PUBLIC_SITE_NAME || "MIA Automotive",
-  phone: process.env.NEXT_PUBLIC_PHONE || "+44 7000 000000",
-  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP || "447000000000",
-  email: process.env.NEXT_PUBLIC_EMAIL || "sales@miaautomotive.co.uk",
+  phone: process.env.NEXT_PUBLIC_PHONE || "07518 812530",
+  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP || "447518812530",
+  email: process.env.NEXT_PUBLIC_EMAIL || "Miaautomotive1@gmail.com",
   address:
-    process.env.NEXT_PUBLIC_ADDRESS || "South Shields, Tyne & Wear, UK",
+    process.env.NEXT_PUBLIC_ADDRESS ||
+    "19 Flagg Court, South Shields, Tyne and Wear, NE33 2LS",
   instagram:
     process.env.NEXT_PUBLIC_INSTAGRAM ||
     "https://www.instagram.com/mia.automotive.ltd/",
