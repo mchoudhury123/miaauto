@@ -69,7 +69,7 @@ export default function FilterChips({
       ))}
       <button
         onClick={onClear}
-        className="text-xs font-semibold uppercase tracking-wide text-gold-700 hover:underline"
+        className="text-xs font-semibold uppercase tracking-wide text-green-700 hover:underline"
       >
         Clear all
       </button>

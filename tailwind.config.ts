@@ -23,27 +23,28 @@ const config: Config = {
           900: "#0e0e11",
           950: "#070708",
         },
-        // Metallic champagne gold.
-        gold: {
-          DEFAULT: "#c8a45c",
-          50: "#fbf8f0",
-          100: "#f4ecd8",
-          200: "#e9d7ad",
-          300: "#dcbd7c",
-          400: "#d1a85c",
-          500: "#c8a45c",
-          600: "#ad8542",
-          700: "#8a6736",
-          800: "#5f4828",
-          900: "#3c2e1b",
+        // Premium emerald green — the brand accent.
+        green: {
+          DEFAULT: "#1f8a4f",
+          50: "#edf7f0",
+          100: "#d2ecda",
+          200: "#a6d8b9",
+          300: "#71bd8f",
+          400: "#3fa268",
+          500: "#1f8a4f",
+          600: "#177040",
+          700: "#155a35",
+          800: "#12432a",
+          900: "#0d2d1d",
+          950: "#071a10",
         },
-        // Warm paper background for an editorial feel.
+        // Clean, near-white background for a light, easy-to-read layout.
         cream: {
-          DEFAULT: "#f7f4ee",
-          50: "#fdfcfa",
-          100: "#f7f4ee",
-          200: "#efe9df",
-          300: "#e3dacb",
+          DEFAULT: "#fbfcfb",
+          50: "#ffffff",
+          100: "#f4f6f4",
+          200: "#e8ebe8",
+          300: "#d7dcd7",
         },
       },
       fontFamily: {
@@ -76,7 +77,7 @@ const config: Config = {
           "0%": { transform: "scale(1.05) translate(0,0)" },
           "100%": { transform: "scale(1.18) translate(-1.5%,-1.5%)" },
         },
-        "gold-sweep": {
+        "green-sweep": {
           "0%": { backgroundPosition: "200% center" },
           "100%": { backgroundPosition: "-200% center" },
         },
@@ -91,7 +92,7 @@ const config: Config = {
         shimmer: "shimmer 1.5s infinite",
         marquee: "marquee 38s linear infinite",
         kenburns: "kenburns 18s ease-out alternate infinite",
-        "gold-sweep": "gold-sweep 6s linear infinite",
+        "green-sweep": "green-sweep 6s linear infinite",
         float: "float 5s ease-in-out infinite",
       },
     },

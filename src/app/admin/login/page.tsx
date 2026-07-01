@@ -42,7 +42,7 @@ function LoginForm() {
   return (
     <div className="w-full max-w-sm">
       <div className="mb-8 text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gold-500 font-display text-2xl font-bold text-ink-900">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500 font-display text-2xl font-bold text-ink-900">
           M
         </span>
         <h1 className="mt-4 text-2xl font-bold text-white">{SITE.name}</h1>
@@ -94,7 +94,7 @@ function LoginForm() {
 
       <Link
         href="/"
-        className="mt-6 block text-center text-sm text-ink-400 hover:text-gold-400"
+        className="mt-6 block text-center text-sm text-ink-400 hover:text-green-400"
       >
         ← Back to website
       </Link>

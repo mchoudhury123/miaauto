@@ -145,7 +145,7 @@ export default function InventoryClient({ makes, modelsByMake }: Props) {
           <SlidersHorizontal className="h-4 w-4" />
           Filters
           {activeCount > 0 && (
-            <span className="ml-1 rounded-full bg-gold-500 px-1.5 text-xs font-bold text-ink-950">
+            <span className="ml-1 rounded-full bg-green-500 px-1.5 text-xs font-bold text-ink-950">
               {activeCount}
             </span>
           )}
@@ -214,7 +214,7 @@ export default function InventoryClient({ makes, modelsByMake }: Props) {
           <div className="absolute inset-y-0 left-0 flex w-full max-w-sm flex-col bg-cream-50 shadow-2xl">
             <div className="flex items-center justify-between border-b border-ink-100 p-4">
               <h2 className="flex items-center gap-2 font-display text-lg font-semibold">
-                <SlidersHorizontal className="h-4 w-4 text-gold-600" />
+                <SlidersHorizontal className="h-4 w-4 text-green-600" />
                 Filters
               </h2>
               <button

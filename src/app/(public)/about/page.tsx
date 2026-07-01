@@ -60,9 +60,9 @@ export default function AboutPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-ink-950/85 via-ink-950/70 to-ink-950" />
         <div className="container-px relative">
-          <span className="eyebrow text-gold-400">About Us</span>
+          <span className="eyebrow text-green-400">About Us</span>
           <h1 className="mt-5 font-display text-[clamp(2.4rem,6vw,4.5rem)] font-semibold leading-[1.0] tracking-tight">
-            The MIA <span className="italic text-gold-gradient">Story</span>
+            The MIA <span className="italic text-green-gradient">Story</span>
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-cream-100/80">
             Three friends, one obsession — building the UK&apos;s number one
@@ -112,7 +112,7 @@ export default function AboutPage() {
             title={
               <>
                 The people behind{" "}
-                <span className="italic text-gold-600">MIA</span>
+                <span className="italic text-green-600">MIA</span>
               </>
             }
             description="Every great car needs the right balance to perform. Our team brings the perfect mix of business grit, mechanical expertise, and retail experience to the table."
@@ -126,14 +126,14 @@ export default function AboutPage() {
                 className="flex flex-col rounded-3xl border border-ink-100 bg-white p-7 transition duration-500 hover:-translate-y-1 hover:shadow-luxe"
               >
                 <div className="flex items-center gap-4">
-                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-ink-950 font-display text-2xl font-semibold text-gold-500">
+                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-ink-950 font-display text-2xl font-semibold text-green-500">
                     {d.initial}
                   </span>
                   <div>
                     <h3 className="font-display text-xl font-semibold text-ink-950">
                       {d.name}
                     </h3>
-                    <p className="mt-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-gold-600">
+                    <p className="mt-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-green-600">
                       <d.icon className="h-3.5 w-3.5" />
                       {d.role}
                     </p>
@@ -150,16 +150,16 @@ export default function AboutPage() {
 
       {/* ───────── THE MIA PROMISE ───────── */}
       <section className="grain relative overflow-hidden bg-ink-950 py-16 text-cream-50 lg:py-24">
-        <div className="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-gold-500/10 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-green-500/10 blur-3xl" />
         <div className="container-px relative">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <span className="eyebrow eyebrow-center flex justify-center text-gold-400">
+            <span className="eyebrow eyebrow-center flex justify-center text-green-400">
               The MIA Promise
             </span>
             <h2 className="mt-5 font-display text-[clamp(1.9rem,4.2vw,3.1rem)] font-semibold leading-[1.08] tracking-tight text-balance">
               We didn&apos;t build this business to just move metal. We built it
               to{" "}
-              <span className="italic text-gold-gradient">
+              <span className="italic text-green-gradient">
                 change how people buy premium cars.
               </span>
             </h2>

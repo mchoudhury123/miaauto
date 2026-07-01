@@ -31,9 +31,9 @@ export default async function InventoryPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/70 to-ink-950/40" />
         <div className="container-px relative">
-          <span className="eyebrow text-gold-400">The collection</span>
+          <span className="eyebrow text-green-400">The collection</span>
           <h1 className="mt-5 font-display text-[clamp(2.1rem,5.5vw,4.25rem)] font-semibold leading-[1.02] tracking-tight">
-            The <span className="italic text-gold-gradient">Showroom</span>
+            The <span className="italic text-green-gradient">Showroom</span>
           </h1>
           <p className="mt-4 max-w-xl text-lg text-cream-100/80">
             {available} hand-selected{" "}

@@ -102,11 +102,11 @@ export default function AdminCarTable({
                     <div className="min-w-0">
                       <Link
                         href={`/admin/cars/${car.id}/edit`}
-                        className="block truncate font-semibold text-ink-900 hover:text-gold-600"
+                        className="block truncate font-semibold text-ink-900 hover:text-green-600"
                       >
                         {car.make} {car.model}
                         {car.featured && (
-                          <Star className="ml-1 inline h-3.5 w-3.5 fill-gold-500 text-gold-500" />
+                          <Star className="ml-1 inline h-3.5 w-3.5 fill-green-500 text-green-500" />
                         )}
                       </Link>
                       <span className="text-xs text-ink-400">
@@ -229,7 +229,7 @@ function MenuItem({
       className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-ink-700 hover:bg-ink-50"
     >
       {children}
-      {active && <Check className="h-4 w-4 text-gold-600" />}
+      {active && <Check className="h-4 w-4 text-green-600" />}
     </button>
   );
 }

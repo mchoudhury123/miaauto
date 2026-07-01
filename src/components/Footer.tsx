@@ -41,7 +41,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Follow us on Instagram"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-cream-200 transition hover:-translate-y-0.5 hover:border-gold-500 hover:text-gold-400"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-cream-200 transition hover:-translate-y-0.5 hover:border-green-500 hover:text-green-400"
               >
                 <Instagram className="h-5 w-5" />
               </a>
@@ -50,7 +50,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Message us on WhatsApp"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-cream-200 transition hover:-translate-y-0.5 hover:border-gold-500 hover:text-gold-400"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-cream-200 transition hover:-translate-y-0.5 hover:border-green-500 hover:text-green-400"
               >
                 <MessageCircle className="h-5 w-5" />
               </a>
@@ -65,7 +65,7 @@ export default function Footer() {
 
       <div className="container-px grid gap-10 py-14 md:grid-cols-4">
         <div>
-          <h4 className="text-[11px] font-semibold uppercase tracking-luxe text-gold-500">
+          <h4 className="text-[11px] font-semibold uppercase tracking-luxe text-green-500">
             Explore
           </h4>
           <ul className="mt-5 space-y-3 text-sm">
@@ -80,7 +80,7 @@ export default function Footer() {
               <li key={href}>
                 <Link
                   href={href}
-                  className="inline-flex items-center gap-1 text-ink-300 transition hover:text-gold-400"
+                  className="inline-flex items-center gap-1 text-ink-300 transition hover:text-green-400"
                 >
                   {label}
                 </Link>
@@ -90,19 +90,19 @@ export default function Footer() {
         </div>
 
         <div className="md:col-span-2">
-          <h4 className="text-[11px] font-semibold uppercase tracking-luxe text-gold-500">
+          <h4 className="text-[11px] font-semibold uppercase tracking-luxe text-green-500">
             Get in touch
           </h4>
           <ul className="mt-5 space-y-3.5 text-sm">
             <li>
-              <a href={telUrl()} className="flex items-center gap-3 transition hover:text-gold-400">
-                <Phone className="h-4 w-4 text-gold-500" />
+              <a href={telUrl()} className="flex items-center gap-3 transition hover:text-green-400">
+                <Phone className="h-4 w-4 text-green-500" />
                 {SITE.phone}
               </a>
             </li>
             <li>
-              <a href={mailtoUrl()} className="flex items-center gap-3 transition hover:text-gold-400">
-                <Mail className="h-4 w-4 text-gold-500" />
+              <a href={mailtoUrl()} className="flex items-center gap-3 transition hover:text-green-400">
+                <Mail className="h-4 w-4 text-green-500" />
                 {SITE.email}
               </a>
             </li>
@@ -111,9 +111,9 @@ export default function Footer() {
                 href={whatsappUrl(`Hi ${SITE.name}, I have an enquiry.`)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 transition hover:text-gold-400"
+                className="flex items-center gap-3 transition hover:text-green-400"
               >
-                <MessageCircle className="h-4 w-4 text-gold-500" />
+                <MessageCircle className="h-4 w-4 text-green-500" />
                 WhatsApp us
                 <ArrowUpRight className="h-3.5 w-3.5" />
               </a>
@@ -123,22 +123,22 @@ export default function Footer() {
                 href={SITE.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 transition hover:text-gold-400"
+                className="flex items-center gap-3 transition hover:text-green-400"
               >
-                <Instagram className="h-4 w-4 text-gold-500" />
+                <Instagram className="h-4 w-4 text-green-500" />
                 @mia.automotive.ltd
                 <ArrowUpRight className="h-3.5 w-3.5" />
               </a>
             </li>
             <li className="flex items-start gap-3">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />
               <span>{SITE.address}</span>
             </li>
           </ul>
         </div>
 
         <div>
-          <h4 className="text-[11px] font-semibold uppercase tracking-luxe text-gold-500">
+          <h4 className="text-[11px] font-semibold uppercase tracking-luxe text-green-500">
             Opening hours
           </h4>
           <ul className="mt-5 space-y-2 text-sm text-ink-400">
@@ -158,7 +158,7 @@ export default function Footer() {
             © {new Date().getFullYear()} {SITE.name}. All rights reserved.
           </p>
           <p className="flex items-center gap-5">
-            <Link href="/admin" className="transition hover:text-gold-400">
+            <Link href="/admin" className="transition hover:text-green-400">
               Admin
             </Link>
             <span>Cars sold subject to availability.</span>

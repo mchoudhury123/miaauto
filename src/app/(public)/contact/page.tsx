@@ -23,10 +23,10 @@ export default function ContactPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink-950 to-ink-950/60" />
         <div className="container-px relative">
-          <span className="eyebrow text-gold-400">Get in touch</span>
+          <span className="eyebrow text-green-400">Get in touch</span>
           <h1 className="mt-5 font-display text-[clamp(2.1rem,5.5vw,4rem)] font-semibold leading-[1.02] tracking-tight">
             Let&apos;s talk{" "}
-            <span className="italic text-gold-400">cars</span>
+            <span className="italic text-green-400">cars</span>
           </h1>
           <p className="mt-4 max-w-xl text-lg text-cream-100/80">
             Questions about a car, want to arrange a viewing, or after something
@@ -75,7 +75,7 @@ export default function ContactPage() {
           {/* Opening hours */}
           <div className="mt-6 rounded-3xl border border-ink-100 bg-white p-6">
             <h2 className="flex items-center gap-2 font-display text-xl font-semibold text-ink-950">
-              <Clock className="h-5 w-5 text-gold-600" />
+              <Clock className="h-5 w-5 text-green-600" />
               Opening hours
             </h2>
             <ul className="mt-4 space-y-2 text-sm">
@@ -109,7 +109,7 @@ export default function ContactPage() {
 
         {/* Form */}
         <div className="rounded-3xl border border-ink-100 bg-white p-6 shadow-luxe-sm sm:p-8">
-          <span className="eyebrow text-gold-600">Enquiry</span>
+          <span className="eyebrow text-green-600">Enquiry</span>
           <h2 className="mt-4 font-display text-3xl font-semibold text-ink-950">
             Send us a message
           </h2>
@@ -139,7 +139,7 @@ function ContactCard({
 }) {
   const inner = (
     <>
-      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-ink-950 text-gold-500 ring-1 ring-gold-500/30 transition-colors duration-500 group-hover:bg-gold-500 group-hover:text-ink-950">
+      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-ink-950 text-green-500 ring-1 ring-green-500/30 transition-colors duration-500 group-hover:bg-green-500 group-hover:text-ink-950">
         {icon}
       </div>
       <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-400">
@@ -149,7 +149,7 @@ function ContactCard({
     </>
   );
   const cls =
-    "group block rounded-2xl border border-ink-100 bg-white p-5 transition duration-500 hover:-translate-y-0.5 hover:border-gold-300 hover:shadow-luxe-sm";
+    "group block rounded-2xl border border-ink-100 bg-white p-5 transition duration-500 hover:-translate-y-0.5 hover:border-green-300 hover:shadow-luxe-sm";
   if (href) {
     return (
       <a

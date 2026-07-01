@@ -169,7 +169,7 @@ export default function CarForm({
         <div>
           <Link
             href="/admin"
-            className="inline-flex items-center gap-1 text-sm font-semibold text-ink-500 hover:text-gold-600"
+            className="inline-flex items-center gap-1 text-sm font-semibold text-ink-500 hover:text-green-600"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to dashboard
@@ -385,7 +385,7 @@ export default function CarForm({
                 type="checkbox"
                 checked={form.ulez}
                 onChange={(e) => set("ulez", e.target.checked)}
-                className="h-4 w-4 rounded border-ink-300 text-gold-600 focus:ring-gold-500"
+                className="h-4 w-4 rounded border-ink-300 text-green-600 focus:ring-green-500"
               />
               <span className="text-sm font-medium text-ink-700">
                 ULEZ compliant
@@ -483,7 +483,7 @@ export default function CarForm({
                 type="checkbox"
                 checked={form.featured}
                 onChange={(e) => set("featured", e.target.checked)}
-                className="h-4 w-4 rounded border-ink-300 text-gold-600 focus:ring-gold-500"
+                className="h-4 w-4 rounded border-ink-300 text-green-600 focus:ring-green-500"
               />
               <span className="text-sm font-medium text-ink-700">
                 Feature on homepage

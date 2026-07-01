@@ -129,7 +129,7 @@ export default function FilterBar({
           <SlidersHorizontal className="h-4 w-4" />
           All filters
           {activeCount > 0 && (
-            <span className="ml-0.5 rounded-full bg-gold-500 px-1.5 text-xs font-bold text-ink-950">
+            <span className="ml-0.5 rounded-full bg-green-500 px-1.5 text-xs font-bold text-ink-950">
               {activeCount}
             </span>
           )}

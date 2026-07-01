@@ -72,7 +72,7 @@ export default function ImageGallery({
               className={cn(
                 "relative aspect-square overflow-hidden rounded-lg ring-2 transition",
                 i === active
-                  ? "ring-gold-500"
+                  ? "ring-green-500"
                   : "ring-transparent hover:ring-ink-200",
               )}
             >

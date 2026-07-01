@@ -44,7 +44,7 @@ export default function Navbar() {
               href={SITE.instagram}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 transition-colors hover:text-gold-400"
+              className="flex items-center gap-2 transition-colors hover:text-green-400"
               aria-label="Instagram"
             >
               <Instagram className="h-3.5 w-3.5" />
@@ -54,7 +54,7 @@ export default function Navbar() {
               href={whatsappUrl(`Hi ${SITE.name}, I have an enquiry.`)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 transition-colors hover:text-gold-400"
+              className="flex items-center gap-2 transition-colors hover:text-green-400"
             >
               <MessageCircle className="h-3.5 w-3.5" />
               WhatsApp us
@@ -79,7 +79,7 @@ export default function Navbar() {
               <span className="font-wordmark text-lg font-medium uppercase tracking-[0.2em] text-cream-50">
                 {SITE.name}
               </span>
-              <span className="mt-1 font-wordmark text-[9px] font-medium uppercase tracking-[0.3em] text-gold-500">
+              <span className="mt-1 font-wordmark text-[9px] font-medium uppercase tracking-[0.3em] text-green-500">
                 Premium Cars
               </span>
             </span>
@@ -97,14 +97,14 @@ export default function Navbar() {
                       className={cn(
                         "relative flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors",
                         active
-                          ? "text-gold-400"
-                          : "text-cream-100 hover:text-gold-400",
+                          ? "text-green-400"
+                          : "text-cream-100 hover:text-green-400",
                       )}
                     >
                       {l.label}
                       <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" />
                       {active && (
-                        <span className="absolute inset-x-4 -bottom-0.5 h-px bg-gold-500" />
+                        <span className="absolute inset-x-4 -bottom-0.5 h-px bg-green-500" />
                       )}
                     </button>
                     <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition duration-200 group-hover:visible group-hover:opacity-100">
@@ -116,8 +116,8 @@ export default function Navbar() {
                             className={cn(
                               "block rounded-lg px-3 py-2.5 text-sm transition-colors",
                               pathname.startsWith(c.href)
-                                ? "bg-white/10 text-gold-400"
-                                : "text-cream-100 hover:bg-white/10 hover:text-gold-400",
+                                ? "bg-white/10 text-green-400"
+                                : "text-cream-100 hover:bg-white/10 hover:text-green-400",
                             )}
                           >
                             {c.label}
@@ -137,13 +137,13 @@ export default function Navbar() {
                   className={cn(
                     "relative px-4 py-2 text-sm font-medium transition-colors",
                     active
-                      ? "text-gold-400"
-                      : "text-cream-100 hover:text-gold-400",
+                      ? "text-green-400"
+                      : "text-cream-100 hover:text-green-400",
                   )}
                 >
                   {l.label}
                   {active && (
-                    <span className="absolute inset-x-4 -bottom-0.5 h-px bg-gold-500" />
+                    <span className="absolute inset-x-4 -bottom-0.5 h-px bg-green-500" />
                   )}
                 </Link>
               );

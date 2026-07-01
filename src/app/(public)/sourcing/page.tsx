@@ -61,10 +61,10 @@ export default function SourcingPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-ink-950/85 via-ink-950/70 to-ink-950" />
         <div className="container-px relative">
-          <span className="eyebrow text-gold-400">Bespoke Vehicle Sourcing</span>
+          <span className="eyebrow text-green-400">Bespoke Vehicle Sourcing</span>
           <h1 className="mt-5 font-display text-[clamp(2.2rem,5.5vw,4.25rem)] font-semibold leading-[1.02] tracking-tight">
             Your perfect car,{" "}
-            <span className="italic text-gold-gradient">sourced by experts</span>
+            <span className="italic text-green-gradient">sourced by experts</span>
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-cream-100/80">
             Give us your ultimate wishlist and our team finds it — using trade
@@ -97,7 +97,7 @@ export default function SourcingPage() {
                 key={h.title}
                 className="flex items-start gap-4 rounded-2xl border border-ink-100 bg-white p-5"
               >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-ink-950 text-gold-500">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-ink-950 text-green-500">
                   <h.icon className="h-5 w-5" />
                 </span>
                 <div>
@@ -122,7 +122,7 @@ export default function SourcingPage() {
             title={
               <>
                 From wishlist to{" "}
-                <span className="italic text-gold-600">your driveway</span>
+                <span className="italic text-green-600">your driveway</span>
               </>
             }
             description="Tell us exactly what you're after — we handle the search, the checks and the delivery."
@@ -131,7 +131,7 @@ export default function SourcingPage() {
             {STEPS.map((s, i) => (
               <Reveal key={s.title} delay={Math.min(i * 0.06, 0.3)}>
                 <li className="flex gap-5 rounded-2xl border border-ink-100 bg-white p-6">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ink-950 font-display text-lg font-semibold text-gold-500">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ink-950 font-display text-lg font-semibold text-green-500">
                     {i + 1}
                   </span>
                   <div>

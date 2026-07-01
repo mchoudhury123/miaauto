@@ -122,11 +122,11 @@ export default async function CarDetailPage({
         <div className="container-px relative">
           {/* breadcrumb */}
           <nav className="flex items-center gap-1.5 text-xs text-cream-200/70">
-            <Link href="/" className="hover:text-gold-400">
+            <Link href="/" className="hover:text-green-400">
               Home
             </Link>
             <ChevronRight className="h-3.5 w-3.5" />
-            <Link href="/inventory" className="hover:text-gold-400">
+            <Link href="/inventory" className="hover:text-green-400">
               Showroom
             </Link>
             <ChevronRight className="h-3.5 w-3.5" />
@@ -138,7 +138,7 @@ export default async function CarDetailPage({
           <div className="mt-5 flex flex-wrap items-end justify-between gap-5">
             <div>
               <div className="flex items-center gap-3">
-                <span className="eyebrow text-gold-400">{car.year} · {car.fuelType}</span>
+                <span className="eyebrow text-green-400">{car.year} · {car.fuelType}</span>
                 <StatusBadge status={car.status} />
               </div>
               <h1 className="mt-3 font-display text-[clamp(2rem,5vw,3.6rem)] font-semibold leading-[1.02] tracking-tight">
@@ -152,7 +152,7 @@ export default async function CarDetailPage({
               <p className="text-[11px] uppercase tracking-luxe text-cream-200/60">
                 Price
               </p>
-              <p className="text-[2.5rem] font-bold leading-none tabular-nums tracking-tight text-gold-gradient sm:text-4xl">
+              <p className="text-[2.5rem] font-bold leading-none tabular-nums tracking-tight text-green-gradient sm:text-4xl">
                 {formatPrice(car.price)}
               </p>
             </div>
@@ -195,7 +195,7 @@ export default async function CarDetailPage({
                   key={s.label}
                   className="rounded-2xl border border-ink-100 bg-white p-4"
                 >
-                  <s.icon className="h-5 w-5 text-gold-600" />
+                  <s.icon className="h-5 w-5 text-green-600" />
                   <p className="mt-2 text-[11px] uppercase tracking-wide text-ink-400">
                     {s.label}
                   </p>
@@ -245,7 +245,7 @@ export default async function CarDetailPage({
                       key={f.id}
                       className="flex items-center gap-2.5 rounded-xl border border-ink-100 bg-white px-3.5 py-2.5 text-sm text-ink-700"
                     >
-                      <Check className="h-4 w-4 shrink-0 text-gold-600" />
+                      <Check className="h-4 w-4 shrink-0 text-green-600" />
                       {f.name}
                     </li>
                   ))}
@@ -293,7 +293,7 @@ export default async function CarDetailPage({
                     </p>
                     <StatusBadge status={car.status} />
                   </div>
-                  <p className="mt-3 text-4xl font-bold tabular-nums tracking-tight text-gold-gradient">
+                  <p className="mt-3 text-4xl font-bold tabular-nums tracking-tight text-green-gradient">
                     {formatPrice(car.price)}
                   </p>
                   <p className="mt-1 text-sm text-cream-200/70">
@@ -308,7 +308,7 @@ export default async function CarDetailPage({
                       This car has now been sold.{" "}
                       <Link
                         href="/inventory"
-                        className="font-semibold text-gold-700"
+                        className="font-semibold text-green-700"
                       >
                         See similar stock
                       </Link>
@@ -352,7 +352,7 @@ export default async function CarDetailPage({
                 id="enquire"
                 className="scroll-mt-28 rounded-3xl border border-ink-100 bg-white p-6 shadow-luxe-sm"
               >
-                <span className="eyebrow text-gold-600">Enquiry</span>
+                <span className="eyebrow text-green-600">Enquiry</span>
                 <h2 className="mt-3 font-display text-2xl font-semibold text-ink-950">
                   Interested in this car?
                 </h2>
@@ -371,7 +371,7 @@ export default async function CarDetailPage({
         <section className="bg-cream-100 py-16 lg:py-24">
           <div className="container-px">
             <Reveal>
-              <span className="eyebrow text-gold-600">Keep looking</span>
+              <span className="eyebrow text-green-600">Keep looking</span>
               <h2 className="mt-3 font-display text-[clamp(1.8rem,3.5vw,2.8rem)] font-semibold tracking-tight text-ink-950">
                 Similar cars you might like
               </h2>

@@ -47,7 +47,7 @@ export default function AdminNav() {
             className={cn(
               "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition",
               active
-                ? "bg-gold-500 text-ink-900"
+                ? "bg-green-500 text-ink-900"
                 : "text-ink-300 hover:bg-ink-800 hover:text-white",
             )}
           >
@@ -64,7 +64,7 @@ export default function AdminNav() {
       {/* Mobile top bar */}
       <div className="flex items-center justify-between border-b border-ink-800 bg-ink-900 px-4 py-3 text-white lg:hidden">
         <Link href="/admin" className="flex items-center gap-2 font-bold">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gold-500 font-display text-ink-900">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500 font-display text-ink-900">
             M
           </span>
           Admin
@@ -87,7 +87,7 @@ export default function AdminNav() {
       {/* Desktop sidebar */}
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col bg-ink-900 p-5 text-white lg:flex">
         <Link href="/admin" className="mb-8 flex items-center gap-2.5">
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-500 font-display text-lg font-bold text-ink-900">
+          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500 font-display text-lg font-bold text-ink-900">
             M
           </span>
           <span>

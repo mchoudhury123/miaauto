@@ -20,7 +20,7 @@ export default function FloatingContact() {
       <a
         href={telUrl()}
         aria-label="Call us"
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-ink-900 p-3.5 text-gold-500 shadow-lg transition hover:scale-105 md:hidden"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-ink-900 p-3.5 text-green-500 shadow-lg transition hover:scale-105 md:hidden"
       >
         <Phone className="h-6 w-6" />
       </a>

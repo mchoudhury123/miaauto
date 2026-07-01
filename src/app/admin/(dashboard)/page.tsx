@@ -41,7 +41,7 @@ export default async function AdminDashboardPage() {
       label: "New enquiries",
       value: newEnquiries,
       icon: Inbox,
-      tint: "text-gold-600 bg-gold-50",
+      tint: "text-green-600 bg-green-50",
       href: "/admin/enquiries",
     },
     {

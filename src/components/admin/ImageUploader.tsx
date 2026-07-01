@@ -77,10 +77,10 @@ export default function ImageUploader({
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
-        className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-ink-200 bg-ink-50 px-6 py-8 text-center transition hover:border-gold-400 hover:bg-gold-50/40 disabled:opacity-60"
+        className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-ink-200 bg-ink-50 px-6 py-8 text-center transition hover:border-green-400 hover:bg-green-50/40 disabled:opacity-60"
       >
         {uploading ? (
-          <Loader2 className="h-7 w-7 animate-spin text-gold-600" />
+          <Loader2 className="h-7 w-7 animate-spin text-green-600" />
         ) : (
           <UploadCloud className="h-7 w-7 text-ink-400" />
         )}
@@ -121,7 +121,7 @@ export default function ImageUploader({
                 }}
                 className={cn(
                   "group relative aspect-[4/3] overflow-hidden rounded-xl border bg-ink-900",
-                  img.isMain ? "border-gold-500 ring-2 ring-gold-500" : "border-ink-200",
+                  img.isMain ? "border-green-500 ring-2 ring-green-500" : "border-ink-200",
                 )}
               >
                 <Image
@@ -135,7 +135,7 @@ export default function ImageUploader({
                   <GripVertical className="h-3.5 w-3.5" />
                 </div>
                 {img.isMain && (
-                  <span className="absolute bottom-1 left-1 rounded bg-gold-500 px-1.5 py-0.5 text-[10px] font-bold text-ink-900">
+                  <span className="absolute bottom-1 left-1 rounded bg-green-500 px-1.5 py-0.5 text-[10px] font-bold text-ink-900">
                     MAIN
                   </span>
                 )}
@@ -143,7 +143,7 @@ export default function ImageUploader({
                   <button
                     type="button"
                     onClick={() => setMain(idx)}
-                    className="rounded bg-ink-900/70 p-1.5 text-white hover:bg-gold-500 hover:text-ink-900"
+                    className="rounded bg-ink-900/70 p-1.5 text-white hover:bg-green-500 hover:text-ink-900"
                     aria-label="Set as main image"
                   >
                     <Star

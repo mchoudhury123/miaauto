@@ -53,7 +53,7 @@ export default function WhyChooseUs() {
             <>
               A better way to buy
               <br className="hidden sm:block" /> your{" "}
-              <span className="italic text-gold-600">next car</span>
+              <span className="italic text-green-600">next car</span>
             </>
           }
           description="We've built our reputation on quality cars, honest advice and looking after every customer like family."
@@ -66,7 +66,7 @@ export default function WhyChooseUs() {
               delay={(i % 3) * 0.08}
               className="group bg-cream-50 p-8 transition-colors duration-500 hover:bg-white"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-ink-950 text-gold-500 transition-all duration-500 group-hover:bg-gold-500 group-hover:text-ink-950">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-ink-950 text-green-500 transition-all duration-500 group-hover:bg-green-500 group-hover:text-ink-950">
                 <Icon className="h-6 w-6" />
               </div>
               <h3 className="mt-6 font-display text-xl font-semibold text-ink-950">

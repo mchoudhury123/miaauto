@@ -29,7 +29,7 @@ export default function CarCard({
         ease: [0.22, 1, 0.36, 1],
         delay: Math.min(index * 0.06, 0.4),
       }}
-      className="group relative flex flex-col overflow-hidden rounded-[20px] border border-ink-100 bg-white transition-all duration-500 hover:-translate-y-1.5 hover:border-gold-300 hover:shadow-luxe"
+      className="group relative flex flex-col overflow-hidden rounded-[20px] border border-ink-100 bg-white transition-all duration-500 hover:-translate-y-1.5 hover:border-green-300 hover:shadow-luxe"
     >
       <Link
         href={`/cars/${car.id}`}
@@ -45,7 +45,7 @@ export default function CarCard({
 
         {isSold && (
           <div className="absolute inset-0 flex items-center justify-center bg-ink-950/55 backdrop-blur-[1px]">
-            <span className="rotate-[-5deg] border-y-2 border-gold-500 px-5 py-1.5 font-display text-xl font-semibold uppercase tracking-[0.2em] text-cream-50">
+            <span className="rotate-[-5deg] border-y-2 border-green-500 px-5 py-1.5 font-display text-xl font-semibold uppercase tracking-[0.2em] text-cream-50">
               Sold
             </span>
           </div>
@@ -54,7 +54,7 @@ export default function CarCard({
         {/* top badges */}
         <div className="absolute left-4 top-4 flex gap-2">
           {car.featured && !isSold && (
-            <span className="badge bg-gold-500/95 text-ink-950 shadow-sm backdrop-blur">
+            <span className="badge bg-green-500/95 text-ink-950 shadow-sm backdrop-blur">
               ★ Featured
             </span>
           )}
@@ -76,14 +76,14 @@ export default function CarCard({
         </div>
 
         {/* hover arrow */}
-        <span className="absolute bottom-4 right-4 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-gold-500 text-ink-950 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+        <span className="absolute bottom-4 right-4 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-green-500 text-ink-950 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
           <ArrowUpRight className="h-5 w-5" />
         </span>
       </Link>
 
       <div className="flex flex-1 flex-col p-5">
         <h3 className="font-display text-xl font-semibold leading-tight text-ink-950">
-          <Link href={`/cars/${car.id}`} className="hover:text-gold-700">
+          <Link href={`/cars/${car.id}`} className="hover:text-green-700">
             {car.make} {car.model}
           </Link>
         </h3>
@@ -107,7 +107,7 @@ export default function CarCard({
                 key={f.id}
                 className="inline-flex items-center gap-1 rounded-full bg-cream-100 px-2.5 py-1 text-[11px] font-medium text-ink-600"
               >
-                <Check className="h-3 w-3 text-gold-600" />
+                <Check className="h-3 w-3 text-green-600" />
                 {f.name}
               </span>
             ))}
@@ -147,7 +147,7 @@ function Spec({
 }) {
   return (
     <div className="flex items-center gap-2.5 bg-white px-3 py-2.5">
-      <span className="text-gold-600 [&>svg]:h-4 [&>svg]:w-4">{icon}</span>
+      <span className="text-green-600 [&>svg]:h-4 [&>svg]:w-4">{icon}</span>
       <span className="min-w-0">
         <span className="block text-[10px] uppercase tracking-wider text-ink-400">
           {label}

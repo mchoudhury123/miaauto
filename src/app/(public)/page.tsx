@@ -39,14 +39,14 @@ export default async function HomePage() {
 
         <div className="container-px relative flex flex-1 flex-col justify-center pt-32 pb-12 sm:pt-40">
           <div className="max-w-3xl">
-            <span className="eyebrow animate-fade-in text-gold-400">
+            <span className="eyebrow animate-fade-in text-green-400">
               {SITE.name} · Est. excellence
             </span>
             <h1 className="mt-6 animate-fade-in font-display text-[clamp(2.25rem,7vw,5.25rem)] font-semibold leading-[1.0] tracking-tight text-balance [animation-delay:80ms]">
               Drive away in
               <br />
               something{" "}
-              <span className="text-gold-gradient animate-gold-sweep italic">
+              <span className="text-green-gradient animate-green-sweep italic">
                 extraordinary
               </span>
             </h1>
@@ -81,7 +81,7 @@ export default async function HomePage() {
               className="pl-4"
               value={
                 <span className="flex items-center gap-1">
-                  4.9 <Star className="h-5 w-5 fill-gold-500 text-gold-500" />
+                  4.9 <Star className="h-5 w-5 fill-green-500 text-green-500" />
                 </span>
               }
               label="Customer rating"
@@ -105,7 +105,7 @@ export default async function HomePage() {
             eyebrow="The collection"
             title={
               <>
-                Featured <span className="italic text-gold-600">stock</span>
+                Featured <span className="italic text-green-600">stock</span>
               </>
             }
             description="A glimpse of what's on the forecourt right now — each one hand-picked and ready to drive."
@@ -113,7 +113,7 @@ export default async function HomePage() {
           <Reveal direction="left">
             <Link
               href="/inventory"
-              className="group hidden items-center gap-2 text-sm font-semibold text-ink-700 hover:text-gold-700 sm:flex"
+              className="group hidden items-center gap-2 text-sm font-semibold text-ink-700 hover:text-green-700 sm:flex"
             >
               View full showroom
               <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -125,7 +125,7 @@ export default async function HomePage() {
           <div className="mt-12 rounded-2xl border border-dashed border-ink-200 py-20 text-center">
             <p className="text-ink-500">
               No cars in stock just yet — check back soon or{" "}
-              <Link href="/contact" className="font-semibold text-gold-700">
+              <Link href="/contact" className="font-semibold text-green-700">
                 get in touch
               </Link>
               .
@@ -148,10 +148,10 @@ export default async function HomePage() {
       </section>
 
       {/* ───────── EXPERIENCE SPLIT ───────── */}
-      <section className="grain relative overflow-hidden bg-ink-950 text-cream-50">
+      <section className="bg-cream-100">
         <div className="container-px grid items-center gap-10 py-16 lg:grid-cols-2 lg:py-28">
           <Reveal direction="right">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-luxe">
               <div
                 className="absolute inset-0 animate-kenburns bg-cover bg-center"
                 style={{
@@ -159,34 +159,33 @@ export default async function HomePage() {
                     "url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1400&q=80')",
                 }}
               />
-              <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
+              <div className="absolute inset-0 ring-1 ring-inset ring-ink-950/10" />
             </div>
           </Reveal>
           <div>
             <SectionHeading
-              dark
               eyebrow="The MIA difference"
               title={
                 <>
                   Buying a car,
                   <br />
-                  <span className="italic text-gold-400">elevated</span>
+                  <span className="italic text-green-600">elevated</span>
                 </>
               }
               description="We treat every car — and every customer — the way we'd want to be treated ourselves. That means honest descriptions, no pressure, and a level of presentation you won't find on the average forecourt."
             />
-            <div className="mt-9 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-2">
+            <div className="mt-9 grid gap-px overflow-hidden rounded-2xl border border-ink-100 bg-ink-100 sm:grid-cols-2">
               {[
                 ["Hand-selected", "Only the cars we'd buy ourselves make the cut."],
                 ["Fully prepared", "Detailed, inspected and ready before listing."],
                 ["Total transparency", "Full history and honest condition notes."],
                 ["Dealer services", "Part exchange, finance support and warranty packages available."],
               ].map(([t, d]) => (
-                <div key={t} className="bg-ink-950 p-6">
-                  <h3 className="font-display text-lg font-semibold text-gold-400">
+                <div key={t} className="bg-white p-6">
+                  <h3 className="font-display text-lg font-semibold text-green-700">
                     {t}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-300">{d}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-600">{d}</p>
                 </div>
               ))}
             </div>
