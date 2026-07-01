@@ -73,6 +73,8 @@ export default function Footer() {
               ["Home", "/"],
               ["Showroom", "/inventory"],
               ["About Us", "/about"],
+              ["Sale or Return", "/sale-or-return"],
+              ["Vehicle Sourcing", "/sourcing"],
               ["Contact Us", "/contact"],
             ].map(([label, href]) => (
               <li key={href}>

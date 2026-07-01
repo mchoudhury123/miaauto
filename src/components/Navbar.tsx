@@ -4,14 +4,25 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, X, Phone, MessageCircle, Instagram } from "lucide-react";
+import { Menu, X, Phone, MessageCircle, Instagram, ChevronDown } from "lucide-react";
 import { cn, telUrl, whatsappUrl } from "@/lib/utils";
 import { SITE } from "@/lib/constants";
 
-const LINKS = [
+type NavLink = { href: string; label: string };
+type NavGroup = { label: string; children: NavLink[] };
+type NavItem = NavLink | NavGroup;
+
+const LINKS: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/inventory", label: "Showroom" },
   { href: "/about", label: "About" },
+  {
+    label: "Services",
+    children: [
+      { href: "/sale-or-return", label: "Sale or Return" },
+      { href: "/sourcing", label: "Vehicle Sourcing" },
+    ],
+  },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -76,6 +87,47 @@ export default function Navbar() {
 
           <div className="hidden items-center gap-1 md:flex">
             {LINKS.map((l) => {
+              if ("children" in l) {
+                const active = l.children.some((c) =>
+                  pathname.startsWith(c.href),
+                );
+                return (
+                  <div key={l.label} className="group relative">
+                    <button
+                      className={cn(
+                        "relative flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors",
+                        active
+                          ? "text-gold-400"
+                          : "text-cream-100 hover:text-gold-400",
+                      )}
+                    >
+                      {l.label}
+                      <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" />
+                      {active && (
+                        <span className="absolute inset-x-4 -bottom-0.5 h-px bg-gold-500" />
+                      )}
+                    </button>
+                    <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition duration-200 group-hover:visible group-hover:opacity-100">
+                      <div className="w-56 overflow-hidden rounded-xl border border-white/10 bg-ink-900/95 p-1.5 shadow-xl backdrop-blur-xl">
+                        {l.children.map((c) => (
+                          <Link
+                            key={c.href}
+                            href={c.href}
+                            className={cn(
+                              "block rounded-lg px-3 py-2.5 text-sm transition-colors",
+                              pathname.startsWith(c.href)
+                                ? "bg-white/10 text-gold-400"
+                                : "text-cream-100 hover:bg-white/10 hover:text-gold-400",
+                            )}
+                          >
+                            {c.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
               const active =
                 l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
               return (
@@ -118,19 +170,36 @@ export default function Navbar() {
       <div
         className={cn(
           "overflow-hidden bg-ink-950 transition-all duration-300 md:hidden",
-          open ? "max-h-96 border-b border-white/10" : "max-h-0",
+          open ? "max-h-[85vh] border-b border-white/10" : "max-h-0",
         )}
       >
         <div className="container-px flex flex-col gap-1 py-4">
-          {LINKS.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="rounded-xl px-4 py-3 text-base font-medium text-cream-100 hover:bg-white/10"
-            >
-              {l.label}
-            </Link>
-          ))}
+          {LINKS.map((l) =>
+            "children" in l ? (
+              <div key={l.label} className="mt-1">
+                <p className="px-4 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-ink-400">
+                  {l.label}
+                </p>
+                {l.children.map((c) => (
+                  <Link
+                    key={c.href}
+                    href={c.href}
+                    className="block rounded-xl px-4 py-3 text-base font-medium text-cream-100 hover:bg-white/10"
+                  >
+                    {c.label}
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="rounded-xl px-4 py-3 text-base font-medium text-cream-100 hover:bg-white/10"
+              >
+                {l.label}
+              </Link>
+            ),
+          )}
           <a href={telUrl()} className="btn-primary mt-2">
             <Phone className="h-4 w-4" />
             Call {SITE.phone}
