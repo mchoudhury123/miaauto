@@ -39,9 +39,21 @@ const FINANCE = ["No outstanding finance", "Yes — finance outstanding", "Not s
 
 type Errors = Partial<Record<keyof Form, string>>;
 
-export default function PartExchangeForm() {
-  const [form, setForm] = useState<Form>(EMPTY);
+export default function PartExchangeForm({
+  carId,
+  carTitle,
+  compact = false,
+}: {
+  carId?: string;
+  carTitle?: string;
+  compact?: boolean;
+}) {
+  const [form, setForm] = useState<Form>(() => ({
+    ...EMPTY,
+    interestedIn: carTitle ?? "",
+  }));
   const [errors, setErrors] = useState<Errors>({});
+  const gridCls = compact ? "mt-3 grid gap-4" : "mt-3 grid gap-4 sm:grid-cols-2";
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle",
   );
@@ -104,6 +116,7 @@ export default function PartExchangeForm() {
           email: form.email,
           phone: form.phone,
           message: buildMessage(),
+          carId,
         }),
       });
       if (res.ok) {
@@ -141,7 +154,7 @@ export default function PartExchangeForm() {
         <h3 className="font-display text-lg font-semibold text-ink-950">
           Your car
         </h3>
-        <div className="mt-3 grid gap-4 sm:grid-cols-2">
+        <div className={gridCls}>
           <Field label="Registration" hint="optional">
             <input
               className="input uppercase"
@@ -234,7 +247,7 @@ export default function PartExchangeForm() {
         <h3 className="font-display text-lg font-semibold text-ink-950">
           Your details
         </h3>
-        <div className="mt-3 grid gap-4 sm:grid-cols-2">
+        <div className={gridCls}>
           <Field label="Your name" error={errors.name} required>
             <input
               className="input"

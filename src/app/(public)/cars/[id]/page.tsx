@@ -16,7 +16,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import ImageGallery from "@/components/ImageGallery";
-import EnquiryForm from "@/components/EnquiryForm";
+import CarEnquiryTabs from "@/components/CarEnquiryTabs";
 import CarCard from "@/components/CarCard";
 import StatusBadge from "@/components/StatusBadge";
 import Reveal from "@/components/Reveal";
@@ -357,9 +357,10 @@ export default async function CarDetailPage({
                   Interested in this car?
                 </h2>
                 <p className="mb-5 mt-1 text-sm text-ink-500">
-                  Send us a message and we&apos;ll get straight back to you.
+                  Send us a message, or add your part-exchange — we&apos;ll get
+                  straight back to you.
                 </p>
-                <EnquiryForm carId={car.id} carTitle={title} compact />
+                <CarEnquiryTabs carId={car.id} carTitle={title} />
               </div>
             </div>
           </div>
