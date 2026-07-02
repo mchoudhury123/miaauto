@@ -73,6 +73,7 @@ export default function Footer() {
               ["Home", "/"],
               ["Showroom", "/inventory"],
               ["About Us", "/about"],
+              ["Part Exchange", "/part-exchange"],
               ["Sale or Return", "/sale-or-return"],
               ["Vehicle Sourcing", "/sourcing"],
               ["Contact Us", "/contact"],

@@ -19,6 +19,7 @@ const LINKS: NavItem[] = [
   {
     label: "Services",
     children: [
+      { href: "/part-exchange", label: "Part Exchange" },
       { href: "/sale-or-return", label: "Sale or Return" },
       { href: "/sourcing", label: "Vehicle Sourcing" },
     ],
