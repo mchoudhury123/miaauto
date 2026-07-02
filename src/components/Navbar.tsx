@@ -80,8 +80,8 @@ export default function Navbar() {
               <span className="font-wordmark text-lg font-medium uppercase tracking-[0.2em] text-cream-50">
                 {SITE.name}
               </span>
-              <span className="mt-1 font-wordmark text-[9px] font-medium uppercase tracking-[0.3em] text-green-500">
-                Premium Cars
+              <span className="mt-1 font-wordmark text-[9px] font-medium uppercase tracking-[0.24em] text-green-500">
+                Driven by Quality
               </span>
             </span>
           </Link>
