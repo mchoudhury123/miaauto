@@ -193,7 +193,7 @@ export default async function HomePage() {
       </section>
 
       {/* ───────── STATS BAND ───────── */}
-      <section className="grain relative overflow-hidden bg-green-700 py-16 text-white lg:py-20">
+      <section className="grain relative overflow-hidden bg-ink-950 py-16 text-white lg:py-20">
         <div className="container-px relative">
           <div className="grid gap-10 sm:grid-cols-3">
             {[
@@ -205,7 +205,7 @@ export default async function HomePage() {
                 <p className="font-display text-5xl font-semibold text-white sm:text-6xl">
                   {s.v}
                 </p>
-                <p className="mt-2 text-sm font-medium uppercase tracking-[0.14em] text-green-100">
+                <p className="mt-2 text-sm font-medium uppercase tracking-[0.14em] text-green-400">
                   {s.l}
                 </p>
               </Reveal>
