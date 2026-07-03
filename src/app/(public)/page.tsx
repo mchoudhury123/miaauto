@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRight, ChevronRight, Star } from "lucide-react";
 import HeroSearch from "@/components/HeroSearch";
 import CarCard from "@/components/CarCard";
-import WhyChooseUs from "@/components/WhyChooseUs";
 import Testimonials from "@/components/Testimonials";
 import ContactCTA from "@/components/ContactCTA";
 import BrandMarquee from "@/components/BrandMarquee";
@@ -213,7 +212,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <WhyChooseUs />
       <Testimonials />
       <ContactCTA />
     </>
