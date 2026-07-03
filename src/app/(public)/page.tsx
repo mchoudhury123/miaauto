@@ -193,22 +193,24 @@ export default async function HomePage() {
       </section>
 
       {/* ───────── STATS BAND ───────── */}
-      <section className="container-px py-16 lg:py-24">
-        <div className="grid gap-10 sm:grid-cols-3">
-          {[
-            { v: <Counter to={sold + 120} suffix="+" />, l: "Happy customers" },
-            { v: <Counter to={available} suffix="" />, l: "Cars in stock now" },
-            { v: "4.9★", l: "Average review score" },
-          ].map((s, i) => (
-            <Reveal key={i} delay={i * 0.1} className="text-center">
-              <p className="font-display text-5xl font-semibold text-ink-950 sm:text-6xl">
-                {s.v}
-              </p>
-              <p className="mt-2 text-sm font-medium uppercase tracking-[0.14em] text-ink-400">
-                {s.l}
-              </p>
-            </Reveal>
-          ))}
+      <section className="grain relative overflow-hidden bg-green-700 py-16 text-white lg:py-20">
+        <div className="container-px relative">
+          <div className="grid gap-10 sm:grid-cols-3">
+            {[
+              { v: <Counter to={sold + 120} suffix="+" />, l: "Happy customers" },
+              { v: <Counter to={available} suffix="" />, l: "Cars in stock now" },
+              { v: "4.9★", l: "Average review score" },
+            ].map((s, i) => (
+              <Reveal key={i} delay={i * 0.1} className="text-center">
+                <p className="font-display text-5xl font-semibold text-white sm:text-6xl">
+                  {s.v}
+                </p>
+                <p className="mt-2 text-sm font-medium uppercase tracking-[0.14em] text-green-100">
+                  {s.l}
+                </p>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
