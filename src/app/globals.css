@@ -106,9 +106,14 @@
   .text-pretty {
     text-wrap: pretty;
   }
-  /* Green metallic gradient text (used on dark sections) */
+  /* Green metallic gradient text (used on dark sections).
+     padding-bottom + box-decoration-break stop italic descenders (y, ?, p…)
+     being clipped by background-clip: text, while still allowing the text to
+     wrap normally across lines. */
   .text-green-gradient {
-    @apply bg-clip-text text-transparent;
+    @apply bg-clip-text pb-[0.2em] text-transparent;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
     background-image: linear-gradient(
       100deg,
       #177040 0%,
