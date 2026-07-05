@@ -22,6 +22,7 @@ const LINKS: NavItem[] = [
       { href: "/part-exchange", label: "Part Exchange" },
       { href: "/sale-or-return", label: "Sale or Return" },
       { href: "/sourcing", label: "Vehicle Sourcing" },
+      { href: "/warranty", label: "Warranty" },
     ],
   },
   { href: "/contact", label: "Contact" },

@@ -8,6 +8,7 @@ import BrandMarquee from "@/components/BrandMarquee";
 import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
 import Counter from "@/components/Counter";
+import WarrantywiseLogo from "@/components/WarrantywiseLogo";
 import { getFeaturedCars, getFilterFacets } from "@/lib/cars";
 import { prisma } from "@/lib/prisma";
 import { SITE } from "@/lib/constants";
@@ -141,6 +142,27 @@ export default async function HomePage() {
         <div className="mt-12 text-center sm:hidden">
           <Link href="/inventory" className="btn-dark">
             View full showroom
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+
+      {/* ───────── WARRANTY PARTNER STRIP ───────── */}
+      <section className="border-y border-ink-100 bg-white py-9">
+        <div className="container-px flex flex-col items-center gap-6 text-center md:flex-row md:justify-between md:text-left">
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-5">
+            <WarrantywiseLogo className="h-11" />
+            <div>
+              <span className="eyebrow justify-center text-green-600 sm:justify-start">
+                Official warranty partner
+              </span>
+              <p className="mt-1.5 font-display text-lg font-semibold text-ink-950 sm:text-xl">
+                Every car can be protected with Warrantywise
+              </p>
+            </div>
+          </div>
+          <Link href="/warranty" className="btn-outline shrink-0">
+            Explore warranty cover
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

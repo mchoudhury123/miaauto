@@ -76,6 +76,7 @@ export default function Footer() {
               ["Part Exchange", "/part-exchange"],
               ["Sale or Return", "/sale-or-return"],
               ["Vehicle Sourcing", "/sourcing"],
+              ["Warranty", "/warranty"],
               ["Contact Us", "/contact"],
             ].map(([label, href]) => (
               <li key={href}>
