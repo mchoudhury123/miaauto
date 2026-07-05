@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import {
   ShieldCheck,
   Wrench,
@@ -6,6 +7,7 @@ import {
   SlidersHorizontal,
   Award,
   TrendingUp,
+  ArrowRight,
 } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/SectionHeading";
@@ -117,60 +119,58 @@ export default function WarrantyPage() {
 
       {/* BENEFITS */}
       <section className="bg-cream-100 py-16 lg:py-24">
-        <div className="container-px">
-          <SectionHeading
-            align="center"
-            eyebrow="What you get"
-            title={
-              <>
-                Cover that has you{" "}
-                <span className="italic text-green-600">covered</span>
-              </>
-            }
-            description="A Warrantywise plan protects the parts that matter, with repairs and claims taken care of for you."
-          />
-          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Featured dark tile (spans 2 columns) */}
-            <Reveal className="grain relative flex flex-col justify-between gap-8 overflow-hidden rounded-3xl bg-ink-950 p-8 text-cream-50 sm:col-span-2 sm:p-9">
-              <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-green-500/15 blur-3xl" />
-              <div className="relative max-w-md">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-500 text-ink-950">
-                  <ShieldCheck className="h-6 w-6" />
+        <div className="container-px grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
+          {/* Feature panel */}
+          <Reveal>
+            <div className="grain relative overflow-hidden rounded-3xl bg-ink-950 p-8 text-cream-50 sm:p-10">
+              <div className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-green-500/15 blur-3xl" />
+              <div className="relative">
+                <div className="inline-flex items-center gap-3 rounded-full bg-white px-4 py-2">
+                  <span className="text-[10px] font-semibold uppercase tracking-luxe text-ink-400">
+                    Backed by
+                  </span>
+                  <WarrantywiseLogo className="h-5" />
                 </div>
-                <h3 className="mt-5 font-display text-2xl font-semibold">
-                  {BENEFITS[0].title}
-                </h3>
-                <p className="mt-2 leading-relaxed text-cream-100/80">
-                  {BENEFITS[0].body}
+                <h2 className="mt-7 font-display text-[clamp(1.9rem,3vw,2.6rem)] font-semibold leading-[1.1] tracking-tight">
+                  Cover that has you{" "}
+                  <span className="italic text-green-gradient">covered</span>
+                </h2>
+                <p className="mt-4 max-w-sm leading-relaxed text-cream-100/80">
+                  A Warrantywise plan protects the parts that matter — with
+                  repairs and claims taken care of for you.
                 </p>
+                <Link href="/contact" className="btn-primary mt-8">
+                  Ask about cover
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
-              <div className="relative inline-flex w-fit items-center gap-3 rounded-full bg-white px-4 py-2">
-                <span className="text-[10px] font-semibold uppercase tracking-luxe text-ink-400">
-                  Backed by
-                </span>
-                <WarrantywiseLogo className="h-5" />
-              </div>
-            </Reveal>
+            </div>
+          </Reveal>
 
-            <BenefitTile b={BENEFITS[1]} />
-            <BenefitTile b={BENEFITS[2]} />
-            <BenefitTile b={BENEFITS[3]} />
-            <BenefitTile b={BENEFITS[4]} />
-
-            {/* Wide green accent tile */}
-            <Reveal className="flex flex-col items-start gap-5 rounded-3xl border border-green-200 bg-green-50 p-8 sm:col-span-2 sm:flex-row sm:items-center lg:col-span-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-600 text-white">
-                <TrendingUp className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="font-display text-xl font-semibold text-ink-950">
-                  {BENEFITS[5].title}
-                </h3>
-                <p className="mt-1 leading-relaxed text-ink-600">
-                  {BENEFITS[5].body}
-                </p>
-              </div>
-            </Reveal>
+          {/* Benefits list */}
+          <div className="grid gap-x-8 gap-y-9 sm:grid-cols-2">
+            {BENEFITS.map((b, i) => {
+              const Icon = b.icon;
+              return (
+                <Reveal
+                  key={b.title}
+                  delay={(i % 2) * 0.08}
+                  className="flex gap-4"
+                >
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-green-600 shadow-sm ring-1 ring-ink-100">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-lg font-semibold text-ink-950">
+                      {b.title}
+                    </h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-ink-500">
+                      {b.body}
+                    </p>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -214,20 +214,5 @@ export default function WarrantyPage() {
         text="Get in touch and we'll talk you through the right level of Warrantywise protection for the car you're interested in."
       />
     </>
-  );
-}
-
-function BenefitTile({ b }: { b: (typeof BENEFITS)[number] }) {
-  const Icon = b.icon;
-  return (
-    <Reveal className="rounded-3xl border border-ink-100 bg-white p-7 transition duration-500 hover:-translate-y-1 hover:shadow-luxe">
-      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-ink-950 text-green-500">
-        <Icon className="h-5 w-5" />
-      </div>
-      <h3 className="mt-4 font-display text-lg font-semibold text-ink-950">
-        {b.title}
-      </h3>
-      <p className="mt-2 text-sm leading-relaxed text-ink-500">{b.body}</p>
-    </Reveal>
   );
 }
