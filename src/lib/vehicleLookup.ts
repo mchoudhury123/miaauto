@@ -1,21 +1,37 @@
-import { FUEL_TYPES, COLOURS } from "./constants";
+import {
+  FUEL_TYPES,
+  COLOURS,
+  TRANSMISSIONS,
+  BODY_TYPES,
+  DOORS,
+  SEATS,
+} from "./constants";
 
 // ── Number-plate vehicle lookup ──────────────────────────────────────────────
-// Combines two free UK government APIs:
-//   1. DVLA Vehicle Enquiry Service (VES) → make, year, fuel, engine cc, colour, MOT expiry
-//      Register: https://register-for-ves.driver-vehicle-licensing.api.gov.uk/
-//   2. DVSA MOT History API → model (and a fallback for make/fuel/colour)
-//      Docs: https://documentation.history.mot.api.gov.uk/
-// If no keys are configured we return clearly-labelled demo data so the feature
-// is visible immediately; it goes live the moment real keys are added to .env.
+// Primary source: a paid commercial provider (UK Vehicle Data) which returns the
+// full taxonomy — make, model, variant/derivative, body shape, transmission,
+// doors, seats, colour, fuel, engine (like AutoTrader).
+//   Sign up: https://ukvehicledata.co.uk/  → set UKVD_API_KEY (+ UKVD_PACKAGE).
+// Optional free supplement: DVLA VES + DVSA MOT History fill any gaps (esp. the
+// MOT expiry → months remaining) if their keys are also configured.
+// With no keys at all we return clearly-labelled demo data so the feature is
+// visible immediately; it goes live the moment a real key is added.
 
 export interface VehicleLookupResult {
   make?: string;
   model?: string;
+  variant?: string;
   year?: number;
-  fuelType?: string;
-  engineSize?: string;
   colour?: string;
+  fuelType?: string;
+  transmission?: string;
+  bodyType?: string;
+  doors?: number;
+  seats?: number;
+  engineSize?: string;
+  insuranceGroup?: number;
+  bootSpace?: number;
+  taxPerYear?: number;
   motMonths?: number;
 }
 
@@ -23,7 +39,7 @@ export interface LookupResponse {
   found: boolean;
   data: VehicleLookupResult;
   warnings: string[];
-  sources: { dvla: boolean; mot: boolean };
+  sources: { ukvd: boolean; dvla: boolean; mot: boolean };
   demo: boolean;
 }
 
@@ -36,6 +52,12 @@ function titleCase(s: string): string {
     .toLowerCase()
     .replace(/\b\w/g, (c) => c.toUpperCase())
     .trim();
+}
+
+function toNum(v: unknown): number | undefined {
+  if (v === null || v === undefined || v === "") return undefined;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : undefined;
 }
 
 /** Map a provider fuel string to our controlled vocabulary. */
@@ -56,7 +78,6 @@ function mapColour(raw?: string): string | undefined {
   if (!raw) return undefined;
   const t = titleCase(raw);
   if ((COLOURS as readonly string[]).includes(t)) return t;
-  // Common DVLA variants
   const v = raw.toUpperCase();
   if (v.includes("GREY") || v.includes("GRAY")) return "Grey";
   if (v.includes("SILVER")) return "Silver";
@@ -65,7 +86,49 @@ function mapColour(raw?: string): string | undefined {
   if (v.includes("WHITE")) return "White";
   if (v.includes("RED")) return "Red";
   if (v.includes("GREEN")) return "Green";
+  if (v.includes("ORANGE")) return "Orange";
+  if (v.includes("YELLOW")) return "Yellow";
+  if (v.includes("BROWN") || v.includes("BEIGE")) return "Brown";
+  if (v.includes("GOLD")) return "Gold";
   return "Other";
+}
+
+/** Provider transmission → Manual | Automatic. */
+function mapTransmission(raw?: string): string | undefined {
+  if (!raw) return undefined;
+  const v = raw.toUpperCase();
+  if (v.includes("MANUAL")) return "Manual";
+  if (v.includes("AUTO") || v.includes("CVT") || v.includes("SEMI") || v.includes("DSG") || v.includes("DCT"))
+    return "Automatic";
+  const t = titleCase(raw);
+  return (TRANSMISSIONS as readonly string[]).includes(t) ? t : undefined;
+}
+
+/** Provider body style → one of BODY_TYPES. */
+function mapBodyType(raw?: string): string | undefined {
+  if (!raw) return undefined;
+  const v = raw.toUpperCase();
+  if (v.includes("HATCH")) return "Hatchback";
+  if (v.includes("SALOON") || v.includes("SEDAN")) return "Saloon";
+  if (v.includes("ESTATE") || v.includes("TOURING") || v.includes("AVANT") || v.includes("WAGON"))
+    return "Estate";
+  if (v.includes("SUV") || v.includes("4X4") || v.includes("UTILITY") || v.includes("CROSSOVER"))
+    return "SUV";
+  if (v.includes("COUPE")) return "Coupe";
+  if (v.includes("CONVERT") || v.includes("CABRIO") || v.includes("ROADSTER") || v.includes("SPIDER"))
+    return "Convertible";
+  if (v.includes("MPV") || v.includes("PEOPLE") || v.includes("TOURER") || v.includes("VAN"))
+    return "MPV";
+  if (v.includes("PICK")) return "Pickup";
+  return undefined;
+}
+
+function mapDoors(n?: number): number | undefined {
+  return n && (DOORS as readonly number[]).includes(n) ? n : undefined;
+}
+
+function mapSeats(n?: number): number | undefined {
+  return n && (SEATS as readonly number[]).includes(n) ? n : undefined;
 }
 
 /** Engine capacity in cc → e.g. "2.0L". */
@@ -85,7 +148,68 @@ function monthsUntil(dateStr?: string): number | undefined {
   return months > 0 ? months : 0;
 }
 
-// ── DVLA VES ─────────────────────────────────────────────────────────────────
+// ── UK Vehicle Data (paid, full taxonomy) ────────────────────────────────────
+async function fetchUkvd(
+  reg: string,
+  warnings: string[],
+): Promise<Partial<VehicleLookupResult> | null> {
+  const key = process.env.UKVD_API_KEY;
+  if (!key) return null;
+  const pkg = process.env.UKVD_PACKAGE || "VehicleData";
+  try {
+    const url =
+      `https://uk1.ukvehicledata.co.uk/api/datapackage/${encodeURIComponent(pkg)}` +
+      `?v=2&api_nullitems=1&auth_apikey=${encodeURIComponent(key)}` +
+      `&key_VRM=${encodeURIComponent(reg)}`;
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) {
+      warnings.push(`Vehicle data lookup failed (${res.status}).`);
+      return null;
+    }
+    const json = (await res.json()) as Record<string, any>;
+    const status: string | undefined = json?.Response?.StatusCode;
+    if (status && status !== "Success") {
+      const s = status.toLowerCase();
+      if (s.includes("notfound") || s.includes("item")) return null; // no match
+      warnings.push(`Vehicle data: ${status}.`);
+      return null;
+    }
+    const items = json?.Response?.DataItems ?? {};
+    const vr = items.VehicleRegistration ?? {};
+    const smmt = items.SmmtDetails ?? {};
+    const tech = items.TechnicalDetails ?? {};
+
+    return {
+      make:
+        vr.Make || smmt.MarqueLiteral
+          ? titleCase(vr.Make || smmt.MarqueLiteral)
+          : undefined,
+      model: smmt.Range || vr.Model ? titleCase(smmt.Range || vr.Model) : undefined,
+      variant: smmt.ModelVariant ? titleCase(smmt.ModelVariant) : undefined,
+      year: toNum(vr.YearOfManufacture),
+      colour: mapColour(vr.Colour),
+      fuelType: mapFuel(vr.FuelType || smmt.FuelType),
+      transmission: mapTransmission(
+        vr.TransmissionType || vr.Transmission || smmt.Transmission,
+      ),
+      bodyType: mapBodyType(smmt.BodyStyle || vr.BodyStyle),
+      doors: mapDoors(toNum(smmt.NumberOfDoors ?? vr.NumberOfDoors)),
+      seats: mapSeats(toNum(smmt.NumberOfSeats ?? vr.SeatingCapacity)),
+      engineSize: ccToLitres(toNum(vr.EngineCapacity ?? smmt.EngineCapacity)),
+      insuranceGroup: toNum(smmt.InsuranceGroup ?? tech?.Safety?.InsuranceGroup),
+      bootSpace: toNum(
+        tech?.Dimensions?.BootSpaceSeatsUp ?? tech?.Dimensions?.LoadSpaceVolume,
+      ),
+      motMonths: monthsUntil(vr.MotExpiryDate),
+    };
+  } catch (e) {
+    console.error("UKVD lookup error", e);
+    warnings.push("Could not reach the vehicle data service.");
+    return null;
+  }
+}
+
+// ── DVLA VES (free, partial) ─────────────────────────────────────────────────
 async function fetchDvla(
   reg: string,
   warnings: string[],
@@ -102,7 +226,7 @@ async function fetchDvla(
         cache: "no-store",
       },
     );
-    if (res.status === 404) return null; // not found — let caller decide
+    if (res.status === 404) return null;
     if (!res.ok) {
       warnings.push(`DVLA lookup failed (${res.status}).`);
       return null;
@@ -123,7 +247,7 @@ async function fetchDvla(
   }
 }
 
-// ── DVSA MOT History (OAuth2 client credentials) ─────────────────────────────
+// ── DVSA MOT History (free, adds model) ──────────────────────────────────────
 async function getMotToken(): Promise<string | null> {
   const { MOT_CLIENT_ID, MOT_CLIENT_SECRET, MOT_TOKEN_URL } = process.env;
   const scope = process.env.MOT_SCOPE || "https://tapi.dvsa.gov.uk/.default";
@@ -161,10 +285,7 @@ async function fetchMot(
       `https://history.mot.api.gov.uk/v1/trade/vehicles/registration/${encodeURIComponent(
         reg,
       )}`,
-      {
-        headers: { Authorization: `Bearer ${token}`, "X-API-Key": key },
-        cache: "no-store",
-      },
+      { headers: { Authorization: `Bearer ${token}`, "X-API-Key": key }, cache: "no-store" },
     );
     if (res.status === 404) return null;
     if (!res.ok) {
@@ -180,12 +301,11 @@ async function fetchMot(
       model: v.model ? titleCase(v.model) : undefined,
       fuelType: mapFuel(v.fuelType),
       colour: mapColour(v.primaryColour),
-      year:
-        v.manufactureYear
-          ? Number(v.manufactureYear)
-          : firstUsed
-            ? new Date(firstUsed).getFullYear()
-            : undefined,
+      year: v.manufactureYear
+        ? Number(v.manufactureYear)
+        : firstUsed
+          ? new Date(firstUsed).getFullYear()
+          : undefined,
     };
   } catch (e) {
     console.error("MOT lookup error", e);
@@ -215,39 +335,47 @@ export async function lookupVehicle(rawReg: string): Promise<LookupResponse> {
   const warnings: string[] = [];
 
   const configured = Boolean(
-    process.env.DVLA_VES_API_KEY || process.env.MOT_API_KEY,
+    process.env.UKVD_API_KEY ||
+      process.env.DVLA_VES_API_KEY ||
+      process.env.MOT_API_KEY,
   );
 
   if (!configured) {
-    // Demo fallback so the UI is usable before keys are added.
+    // Rich demo sample so the UI is usable before a key is added.
     return {
       found: true,
       demo: true,
-      sources: { dvla: false, mot: false },
+      sources: { ukvd: false, dvla: false, mot: false },
       warnings: [
-        "Demo data — add DVLA / MOT API keys to .env for live lookups.",
+        "Demo data — add a UK Vehicle Data API key (UKVD_API_KEY) in .env for live lookups.",
       ],
       data: {
-        make: "Volkswagen",
-        model: "Golf",
+        make: "BMW",
+        model: "3 Series",
+        variant: "320d M Sport",
         year: 2019,
-        fuelType: "Petrol",
-        engineSize: "1.5L",
         colour: "Grey",
+        fuelType: "Diesel",
+        transmission: "Automatic",
+        bodyType: "Saloon",
+        doors: 4,
+        seats: 5,
+        engineSize: "2.0L",
         motMonths: 8,
       },
     };
   }
 
-  // DVLA is authoritative for make/year/fuel/engine/colour; MOT adds the model.
-  const dvla = await fetchDvla(reg, warnings);
-  const mot = await fetchMot(reg, warnings);
+  // Paid provider is authoritative; free sources fill any gaps (e.g. MOT months).
+  const ukvd = await fetchUkvd(reg, warnings);
+  const dvla = process.env.DVLA_VES_API_KEY ? await fetchDvla(reg, warnings) : null;
+  const mot = process.env.MOT_API_KEY ? await fetchMot(reg, warnings) : null;
 
-  if (!dvla && !mot) {
+  if (!ukvd && !dvla && !mot) {
     return {
       found: false,
       demo: false,
-      sources: { dvla: false, mot: false },
+      sources: { ukvd: false, dvla: false, mot: false },
       warnings:
         warnings.length > 0
           ? warnings
@@ -256,13 +384,18 @@ export async function lookupVehicle(rawReg: string): Promise<LookupResponse> {
     };
   }
 
-  let data: VehicleLookupResult = { ...(dvla ?? {}) };
-  data = fillGaps(data, mot); // model + any DVLA gaps
+  let data: VehicleLookupResult = { ...(ukvd ?? {}) };
+  data = fillGaps(data, dvla);
+  data = fillGaps(data, mot);
 
   return {
     found: true,
     demo: false,
-    sources: { dvla: Boolean(dvla), mot: Boolean(mot) },
+    sources: {
+      ukvd: Boolean(ukvd),
+      dvla: Boolean(dvla),
+      mot: Boolean(mot),
+    },
     warnings,
     data,
   };

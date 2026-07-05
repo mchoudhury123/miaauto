@@ -3,7 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, AlertCircle, Plus, X, ArrowLeft } from "lucide-react";
+import {
+  Loader2,
+  AlertCircle,
+  Plus,
+  X,
+  ArrowLeft,
+  Search,
+  Check,
+} from "lucide-react";
 import ImageUploader, { type FormImage } from "./ImageUploader";
 import {
   FUEL_TYPES,
@@ -104,8 +112,103 @@ export default function CarForm({
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
 
+  // ── Number-plate lookup ──
+  const [reg, setReg] = useState(car?.regYear ?? "");
+  const [lookupState, setLookupState] = useState<
+    "idle" | "loading" | "done" | "error"
+  >("idle");
+  const [lookupMsg, setLookupMsg] = useState("");
+  const [lookupWarnings, setLookupWarnings] = useState<string[]>([]);
+  const [filled, setFilled] = useState<string[]>([]);
+
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
+
+  async function runLookup() {
+    const plate = reg.trim();
+    if (!plate) return;
+    setLookupState("loading");
+    setLookupMsg("");
+    setLookupWarnings([]);
+    setFilled([]);
+    try {
+      const res = await fetch("/api/admin/lookup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reg: plate }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setLookupState("error");
+        setLookupMsg(json.error || "No vehicle found for that registration.");
+        return;
+      }
+      const d = json.data as {
+        make?: string;
+        model?: string;
+        variant?: string;
+        year?: number;
+        colour?: string;
+        fuelType?: string;
+        transmission?: string;
+        bodyType?: string;
+        doors?: number;
+        seats?: number;
+        engineSize?: string;
+        insuranceGroup?: number;
+        bootSpace?: number;
+        taxPerYear?: number;
+        motMonths?: number;
+      };
+      const got: string[] = [];
+      setForm((f) => {
+        const next = { ...f, regYear: plate.toUpperCase() };
+        const fillStr = (key: keyof FormState, val: string | undefined, label: string) => {
+          if (val) {
+            (next[key] as string) = val;
+            got.push(label);
+          }
+        };
+        const fillNum = (
+          key: keyof FormState,
+          val: number | undefined,
+          label: string,
+        ) => {
+          if (val !== undefined && val !== null) {
+            (next[key] as string) = String(val);
+            got.push(label);
+          }
+        };
+        fillStr("make", d.make, "Make");
+        fillStr("model", d.model, "Model");
+        fillStr("variant", d.variant, "Variant");
+        fillNum("year", d.year, "Year");
+        fillStr("colour", d.colour, "Colour");
+        fillStr("fuelType", d.fuelType, "Fuel");
+        fillStr("transmission", d.transmission, "Gearbox");
+        fillStr("bodyType", d.bodyType, "Body");
+        fillNum("doors", d.doors, "Doors");
+        fillNum("seats", d.seats, "Seats");
+        fillStr("engineSize", d.engineSize, "Engine");
+        fillNum("insuranceGroup", d.insuranceGroup, "Insurance");
+        fillNum("bootSpace", d.bootSpace, "Boot");
+        fillNum("taxPerYear", d.taxPerYear, "Tax");
+        fillNum("motMonths", d.motMonths, "MOT");
+        return next;
+      });
+      setFilled(got);
+      setLookupWarnings(json.warnings || []);
+      setLookupState("done");
+      setLookupMsg(
+        got.length > 0
+          ? `Found it — auto-filled ${got.length} field${got.length === 1 ? "" : "s"}. Add the mileage, price and photos to finish.`
+          : "Vehicle found, but no details could be auto-filled.",
+      );
+    } catch {
+      setLookupState("error");
+      setLookupMsg("Lookup failed. Please try again.");
+    }
+  }
 
   function addFeature() {
     const v = featureInput.trim();
@@ -179,6 +282,92 @@ export default function CarForm({
           </h1>
         </div>
       </div>
+
+      {/* Quick add by registration */}
+      <section className="rounded-2xl border border-green-300 bg-green-50/60 p-5 sm:p-6">
+        <div className="flex items-center gap-2">
+          <Search className="h-4 w-4 text-green-700" />
+          <h2 className="text-base font-bold text-ink-900">
+            Quick add by registration
+          </h2>
+        </div>
+        <p className="mt-1 text-sm text-ink-500">
+          Enter the number plate and we&apos;ll auto-fill the make, model,
+          variant, body, colour, fuel, gearbox, doors, seats, engine and MOT.
+        </p>
+
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+          <div className="flex flex-1 overflow-hidden rounded-lg border-2 border-ink-900 shadow-sm sm:max-w-xs">
+            <span className="flex w-9 items-center justify-center bg-[#0a3aa3] text-[10px] font-bold text-white">
+              GB
+            </span>
+            <input
+              value={reg}
+              onChange={(e) => setReg(e.target.value.toUpperCase())}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  runLookup();
+                }
+              }}
+              placeholder="AB18 CDE"
+              className="w-full bg-[#fcd932] px-3 py-2.5 text-center text-lg font-bold uppercase tracking-widest text-ink-950 placeholder:text-ink-700/50 focus:outline-none"
+              aria-label="Number plate"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={runLookup}
+            disabled={lookupState === "loading" || !reg.trim()}
+            className="btn-dark shrink-0"
+          >
+            {lookupState === "loading" ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Looking up…
+              </>
+            ) : (
+              <>
+                <Search className="h-4 w-4" />
+                Look up
+              </>
+            )}
+          </button>
+        </div>
+
+        {lookupState === "done" && (
+          <div className="mt-3 flex items-start gap-2 rounded-lg bg-emerald-50 px-3 py-2.5 text-sm text-emerald-800">
+            <Check className="mt-0.5 h-4 w-4 shrink-0" />
+            <div>
+              <p>{lookupMsg}</p>
+              {filled.length > 0 && (
+                <p className="mt-1 text-xs text-emerald-700">
+                  Filled: {filled.join(", ")}.
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+        {lookupState === "error" && (
+          <div className="mt-3 flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-700">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            {lookupMsg}
+          </div>
+        )}
+        {lookupWarnings.length > 0 && (
+          <div className="mt-2 space-y-1">
+            {lookupWarnings.map((w, i) => (
+              <p
+                key={i}
+                className="flex items-center gap-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800"
+              >
+                <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                {w}
+              </p>
+            ))}
+          </div>
+        )}
+      </section>
 
       {serverError && (
         <div className="flex items-center gap-2 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
