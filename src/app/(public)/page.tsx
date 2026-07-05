@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, ChevronRight, Star } from "lucide-react";
+import {
+  ArrowRight,
+  ChevronRight,
+  Star,
+  ShieldCheck,
+  Wrench,
+  BadgeCheck,
+} from "lucide-react";
 import HeroSearch from "@/components/HeroSearch";
 import CarCard from "@/components/CarCard";
 import Testimonials from "@/components/Testimonials";
@@ -147,24 +154,51 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ───────── WARRANTY PARTNER STRIP ───────── */}
-      <section className="border-y border-ink-100 bg-white py-9">
-        <div className="container-px flex flex-col items-center gap-6 text-center md:flex-row md:justify-between md:text-left">
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-5">
-            <WarrantywiseLogo className="h-11" />
+      {/* ───────── WARRANTY PARTNER ───────── */}
+      <section className="container-px py-12 lg:py-16">
+        <div className="grain relative overflow-hidden rounded-[28px] bg-ink-950 px-6 py-10 text-cream-50 sm:px-10 sm:py-12">
+          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-green-500/15 blur-3xl" />
+          <div className="relative grid items-center gap-9 lg:grid-cols-[1fr_auto]">
             <div>
-              <span className="eyebrow justify-center text-green-600 sm:justify-start">
-                Official warranty partner
-              </span>
-              <p className="mt-1.5 font-display text-lg font-semibold text-ink-950 sm:text-xl">
-                Every car can be protected with Warrantywise
+              <div className="inline-flex items-center gap-3 rounded-full bg-white px-4 py-2 shadow-luxe-sm">
+                <span className="text-[10px] font-semibold uppercase tracking-luxe text-ink-400">
+                  Official partner
+                </span>
+                <span className="h-4 w-px bg-ink-200" />
+                <WarrantywiseLogo className="h-6" />
+              </div>
+              <h2 className="mt-6 font-display text-[clamp(1.9rem,3.6vw,2.7rem)] font-semibold leading-[1.1] tracking-tight text-balance">
+                Every car protected with{" "}
+                <span className="italic text-green-gradient">Warrantywise</span>
+              </h2>
+              <p className="mt-3 max-w-xl text-cream-100/80">
+                Add comprehensive mechanical &amp; electrical cover to any car we
+                sell — repairs at approved garages, parts &amp; labour covered,
+                and claims handled for you.
               </p>
+              <ul className="mt-6 flex flex-wrap gap-x-7 gap-y-2.5 text-sm font-medium text-cream-100">
+                <li className="flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 text-green-400" />
+                  Comprehensive cover
+                </li>
+                <li className="flex items-center gap-2">
+                  <Wrench className="h-4 w-4 text-green-400" />
+                  Approved repairers
+                </li>
+                <li className="flex items-center gap-2">
+                  <BadgeCheck className="h-4 w-4 text-green-400" />
+                  Claims handled
+                </li>
+              </ul>
             </div>
+            <Link
+              href="/warranty"
+              className="btn-primary w-full justify-center lg:w-auto"
+            >
+              Explore warranty cover
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
-          <Link href="/warranty" className="btn-outline shrink-0">
-            Explore warranty cover
-            <ArrowRight className="h-4 w-4" />
-          </Link>
         </div>
       </section>
 
