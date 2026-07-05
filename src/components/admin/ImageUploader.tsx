@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
+import { upload } from "@vercel/blob/client";
 import { UploadCloud, Star, X, Loader2, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +11,8 @@ export interface FormImage {
   isMain: boolean;
   alt?: string | null;
 }
+
+const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 
 export default function ImageUploader({
   images,
@@ -28,25 +31,30 @@ export default function ImageUploader({
     setUploading(true);
     setError("");
     try {
-      const fd = new FormData();
-      Array.from(files).forEach((f) => fd.append("files", f));
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Upload failed");
-        return;
+      const uploaded: FormImage[] = [];
+      // Upload each file directly to Vercel Blob (no 4.5MB limit, any count).
+      for (const file of Array.from(files)) {
+        if (!ALLOWED.includes(file.type)) {
+          setError(`${file.name}: unsupported file type`);
+          continue;
+        }
+        const blob = await upload(file.name, file, {
+          access: "public",
+          handleUploadUrl: "/api/upload",
+          contentType: file.type,
+        });
+        uploaded.push({ url: blob.url, isMain: false });
       }
-      const newImgs: FormImage[] = data.urls.map((url: string) => ({
-        url,
-        isMain: false,
-      }));
-      const merged = [...images, ...newImgs];
+      if (uploaded.length === 0) return;
+      const merged = [...images, ...uploaded];
       // Ensure one main image.
       if (!merged.some((i) => i.isMain) && merged.length > 0)
         merged[0].isMain = true;
       onChange(merged);
-    } catch {
-      setError("Upload failed. Please try again.");
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "Upload failed. Please try again.",
+      );
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";

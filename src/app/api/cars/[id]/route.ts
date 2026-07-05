@@ -128,7 +128,7 @@ export async function PATCH(
   }
 }
 
-// DELETE /api/cars/:id (admin only). Cascades images + features.
+// DELETE /api/cars/:id (admin only).
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: { id: string } },
@@ -137,7 +137,17 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
   }
   try {
-    await prisma.car.delete({ where: { id: params.id } });
+    // Explicitly detach/remove related rows in one transaction so the delete
+    // never fails on a foreign-key constraint (doesn't rely on DB cascade).
+    await prisma.$transaction([
+      prisma.enquiry.updateMany({
+        where: { carId: params.id },
+        data: { carId: null },
+      }),
+      prisma.carImage.deleteMany({ where: { carId: params.id } }),
+      prisma.feature.deleteMany({ where: { carId: params.id } }),
+      prisma.car.delete({ where: { id: params.id } }),
+    ]);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("DELETE /api/cars/:id failed", err);

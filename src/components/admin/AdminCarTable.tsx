@@ -49,15 +49,23 @@ export default function AdminCarTable({
   async function remove(id: string) {
     if (!confirm("Delete this car permanently? This cannot be undone.")) return;
     setBusy(id);
+    setMenu(null);
     try {
       const res = await fetch(`/api/cars/${id}`, { method: "DELETE" });
       if (res.ok) {
         setCars((cs) => cs.filter((c) => c.id !== id));
         router.refresh();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(
+          data.error ||
+            "Could not delete this car. Please try again, or refresh and retry.",
+        );
       }
+    } catch {
+      alert("Network error while deleting. Please check your connection and try again.");
     } finally {
       setBusy(null);
-      setMenu(null);
     }
   }
 
