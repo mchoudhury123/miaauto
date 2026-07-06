@@ -16,6 +16,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import ImageGallery from "@/components/ImageGallery";
+import FullVehicleDetails from "@/components/FullVehicleDetails";
 import CarEnquiryTabs from "@/components/CarEnquiryTabs";
 import CarCard from "@/components/CarCard";
 import StatusBadge from "@/components/StatusBadge";
@@ -106,6 +107,59 @@ export default async function CarDetailPage({
     car.serviceHistory && { label: "Service history", value: car.serviceHistory },
     { label: "ULEZ compliant", value: car.ulez ? "Yes" : "No" },
   ].filter(Boolean) as { label: string; value: string }[];
+
+  // Additional spec groups — revealed by the "Show all details" toggle.
+  const performanceDetails = [
+    car.powerBhp != null && { label: "Power", value: `${car.powerBhp} bhp` },
+    car.torqueNm != null && { label: "Torque", value: `${car.torqueNm} Nm` },
+    car.zeroToSixty != null && {
+      label: "0–60 mph",
+      value: `${car.zeroToSixty} seconds`,
+    },
+    car.topSpeedMph != null && {
+      label: "Top speed",
+      value: `${car.topSpeedMph} mph`,
+    },
+    car.mpgCombined != null && {
+      label: "Fuel economy (combined)",
+      value: `${car.mpgCombined} mpg`,
+    },
+    car.mpgUrban != null && {
+      label: "Fuel economy (urban)",
+      value: `${car.mpgUrban} mpg`,
+    },
+    car.mpgExtraUrban != null && {
+      label: "Fuel economy (extra-urban)",
+      value: `${car.mpgExtraUrban} mpg`,
+    },
+    car.co2Emissions != null && {
+      label: "CO₂ emissions",
+      value: `${car.co2Emissions} g/km`,
+    },
+    car.taxBand && { label: "Tax band", value: car.taxBand },
+  ].filter(Boolean) as { label: string; value: string }[];
+
+  const dimensionDetails = [
+    car.gears != null && { label: "Gears", value: `${car.gears}-speed` },
+    car.driveType && { label: "Drive type", value: car.driveType },
+    car.drivingAxle && { label: "Driving axle", value: car.drivingAxle },
+    car.lengthMm != null && { label: "Length", value: `${car.lengthMm} mm` },
+    car.widthMm != null && { label: "Width", value: `${car.widthMm} mm` },
+    car.heightMm != null && { label: "Height", value: `${car.heightMm} mm` },
+    car.wheelbaseMm != null && {
+      label: "Wheelbase",
+      value: `${car.wheelbaseMm} mm`,
+    },
+    car.fuelTankCapacity != null && {
+      label: "Fuel tank",
+      value: `${car.fuelTankCapacity} litres`,
+    },
+  ].filter(Boolean) as { label: string; value: string }[];
+
+  const extraGroups = [
+    { title: "Performance & economy", items: performanceDetails },
+    { title: "Dimensions & drivetrain", items: dimensionDetails },
+  ];
 
   return (
     <>
@@ -264,21 +318,7 @@ export default async function CarDetailPage({
             )}
 
             <Section title="Full vehicle details">
-              <dl className="grid grid-cols-1 overflow-hidden rounded-2xl border border-ink-100 sm:grid-cols-2">
-                {details.map((d, i) => (
-                  <div
-                    key={d.label}
-                    className={`flex items-center justify-between gap-4 px-4 py-3 text-sm ${
-                      i % 2 === 0 ? "bg-cream-100/60" : "bg-white"
-                    }`}
-                  >
-                    <dt className="text-ink-400">{d.label}</dt>
-                    <dd className="text-right font-semibold text-ink-950">
-                      {d.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              <FullVehicleDetails primary={details} groups={extraGroups} />
             </Section>
           </div>
 
