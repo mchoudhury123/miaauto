@@ -155,6 +155,7 @@ export default function CarForm({
         doors?: number;
         seats?: number;
         engineSize?: string;
+        previousOwners?: number;
         insuranceGroup?: number;
         bootSpace?: number;
         taxPerYear?: number;
@@ -190,6 +191,7 @@ export default function CarForm({
         fillNum("doors", d.doors, "Doors");
         fillNum("seats", d.seats, "Seats");
         fillStr("engineSize", d.engineSize, "Engine");
+        fillNum("previousOwners", d.previousOwners, "Owners");
         fillNum("insuranceGroup", d.insuranceGroup, "Insurance");
         fillNum("bootSpace", d.bootSpace, "Boot");
         fillNum("taxPerYear", d.taxPerYear, "Tax");

@@ -29,6 +29,7 @@ export interface VehicleLookupResult {
   doors?: number;
   seats?: number;
   engineSize?: string;
+  previousOwners?: number;
   insuranceGroup?: number;
   bootSpace?: number;
   taxPerYear?: number;
@@ -148,62 +149,81 @@ function monthsUntil(dateStr?: string): number | undefined {
   return months > 0 ? months : 0;
 }
 
-// ── UK Vehicle Data (paid, full taxonomy) ────────────────────────────────────
+// ── Vehicle Data Global (paid, full taxonomy) ────────────────────────────────
+// GET https://uk.api.vehicledataglobal.com/r2/lookup?ApiKey=..&PackageName=..&Vrm=..
 async function fetchUkvd(
   reg: string,
   warnings: string[],
 ): Promise<Partial<VehicleLookupResult> | null> {
   const key = process.env.UKVD_API_KEY;
   if (!key) return null;
-  const pkg = process.env.UKVD_PACKAGE || "VehicleData";
+  const pkg = process.env.UKVD_PACKAGE || "VehicleDetails";
   try {
     const url =
-      `https://uk1.ukvehicledata.co.uk/api/datapackage/${encodeURIComponent(pkg)}` +
-      `?v=2&api_nullitems=1&auth_apikey=${encodeURIComponent(key)}` +
-      `&key_VRM=${encodeURIComponent(reg)}`;
+      `https://uk.api.vehicledataglobal.com/r2/lookup` +
+      `?ApiKey=${encodeURIComponent(key)}` +
+      `&PackageName=${encodeURIComponent(pkg)}` +
+      `&Vrm=${encodeURIComponent(reg)}`;
     const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) {
+    if (res.status !== 200) {
       warnings.push(`Vehicle data lookup failed (${res.status}).`);
       return null;
     }
     const json = (await res.json()) as Record<string, any>;
-    const status: string | undefined = json?.Response?.StatusCode;
-    if (status && status !== "Success") {
-      const s = status.toLowerCase();
-      if (s.includes("notfound") || s.includes("item")) return null; // no match
-      warnings.push(`Vehicle data: ${status}.`);
+    const info = json?.ResponseInformation ?? {};
+    if (!info.IsSuccessStatusCode) {
+      // 2 NoResults, 14 NoSearchTerm, 25 NoDvlaData, 26 NoMatch → treat as "not found"
+      if ([2, 14, 25, 26].includes(info.StatusCode)) return null;
+      warnings.push(`Vehicle data: ${info.StatusMessage || "lookup unsuccessful"}.`);
       return null;
     }
-    const items = json?.Response?.DataItems ?? {};
-    const vr = items.VehicleRegistration ?? {};
-    const smmt = items.SmmtDetails ?? {};
-    const tech = items.TechnicalDetails ?? {};
+
+    const results = json?.Results ?? {};
+    const vd = results.VehicleDetails ?? {};
+    const vi = vd.VehicleIdentification ?? {};
+    const hist = vd.VehicleHistory ?? {};
+    const dvlaTech = vd.DvlaTechnicalDetails ?? {};
+    const ved = vd.VehicleStatus?.VehicleExciseDutyDetails?.VedRate?.Standard ?? {};
+
+    const md = results.ModelDetails ?? {};
+    const mi = md.ModelIdentification ?? {};
+    const body = md.BodyDetails ?? {};
+    const power = md.Powertrain ?? {};
+    const ice = power.IceDetails ?? {};
+    const trans = power.Transmission ?? {};
+
+    const litres = toNum(ice.EngineCapacityLitres);
+    const engineSize =
+      litres !== undefined
+        ? `${litres.toFixed(1)}L`
+        : ccToLitres(toNum(ice.EngineCapacityCc ?? dvlaTech.EngineCapacityCc));
+
+    const keepers = Array.isArray(hist.KeeperChangeList)
+      ? hist.KeeperChangeList
+      : [];
+    const tax = toNum(ved.TwelveMonths);
 
     return {
       make:
-        vr.Make || smmt.MarqueLiteral
-          ? titleCase(vr.Make || smmt.MarqueLiteral)
+        mi.Make || vi.DvlaMake ? titleCase(mi.Make || vi.DvlaMake) : undefined,
+      model:
+        mi.Range || mi.Model || vi.DvlaModel
+          ? titleCase(mi.Range || mi.Model || vi.DvlaModel)
           : undefined,
-      model: smmt.Range || vr.Model ? titleCase(smmt.Range || vr.Model) : undefined,
-      variant: smmt.ModelVariant ? titleCase(smmt.ModelVariant) : undefined,
-      year: toNum(vr.YearOfManufacture),
-      colour: mapColour(vr.Colour),
-      fuelType: mapFuel(vr.FuelType || smmt.FuelType),
-      transmission: mapTransmission(
-        vr.TransmissionType || vr.Transmission || smmt.Transmission,
-      ),
-      bodyType: mapBodyType(smmt.BodyStyle || vr.BodyStyle),
-      doors: mapDoors(toNum(smmt.NumberOfDoors ?? vr.NumberOfDoors)),
-      seats: mapSeats(toNum(smmt.NumberOfSeats ?? vr.SeatingCapacity)),
-      engineSize: ccToLitres(toNum(vr.EngineCapacity ?? smmt.EngineCapacity)),
-      insuranceGroup: toNum(smmt.InsuranceGroup ?? tech?.Safety?.InsuranceGroup),
-      bootSpace: toNum(
-        tech?.Dimensions?.BootSpaceSeatsUp ?? tech?.Dimensions?.LoadSpaceVolume,
-      ),
-      motMonths: monthsUntil(vr.MotExpiryDate),
+      variant: mi.ModelVariant ? titleCase(mi.ModelVariant) : undefined,
+      year: toNum(vi.YearOfManufacture),
+      colour: mapColour(hist.ColourDetails?.CurrentColour),
+      fuelType: mapFuel(power.FuelType || vi.DvlaFuelType),
+      transmission: mapTransmission(trans.TransmissionType),
+      bodyType: mapBodyType(body.BodyStyle || vi.DvlaBodyType),
+      doors: mapDoors(toNum(body.NumberOfDoors)),
+      seats: mapSeats(toNum(body.NumberOfSeats ?? dvlaTech.NumberOfSeats)),
+      engineSize,
+      previousOwners: toNum(keepers[0]?.NumberOfPreviousKeepers),
+      taxPerYear: tax !== undefined ? Math.round(tax) : undefined,
     };
   } catch (e) {
-    console.error("UKVD lookup error", e);
+    console.error("VDG lookup error", e);
     warnings.push("Could not reach the vehicle data service.");
     return null;
   }
@@ -361,7 +381,8 @@ export async function lookupVehicle(rawReg: string): Promise<LookupResponse> {
         doors: 4,
         seats: 5,
         engineSize: "2.0L",
-        motMonths: 8,
+        previousOwners: 2,
+        taxPerYear: 190,
       },
     };
   }
