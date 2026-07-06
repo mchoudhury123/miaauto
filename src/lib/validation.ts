@@ -31,6 +31,11 @@ export function validateCarInput(body: unknown): ValidationResult {
     const n = Math.round(Number(v));
     return Number.isFinite(n) ? n : null;
   };
+  const num = (v: unknown): number | null => {
+    if (v === "" || v === null || v === undefined) return null;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  };
 
   for (const key of REQUIRED_STRINGS) {
     if (!str(b[key])) errors[key] = "This field is required";
@@ -95,6 +100,23 @@ export function validateCarInput(body: unknown): ValidationResult {
     bootSpace: int(b.bootSpace),
     taxPerYear: int(b.taxPerYear),
     insuranceGroup: int(b.insuranceGroup),
+    co2Emissions: int(b.co2Emissions),
+    taxBand: optStr(b.taxBand),
+    mpgUrban: num(b.mpgUrban),
+    mpgExtraUrban: num(b.mpgExtraUrban),
+    mpgCombined: num(b.mpgCombined),
+    powerBhp: int(b.powerBhp),
+    torqueNm: int(b.torqueNm),
+    topSpeedMph: int(b.topSpeedMph),
+    zeroToSixty: num(b.zeroToSixty),
+    gears: int(b.gears),
+    driveType: optStr(b.driveType),
+    drivingAxle: optStr(b.drivingAxle),
+    lengthMm: int(b.lengthMm),
+    widthMm: int(b.widthMm),
+    heightMm: int(b.heightMm),
+    wheelbaseMm: int(b.wheelbaseMm),
+    fuelTankCapacity: int(b.fuelTankCapacity),
     fuelType: str(b.fuelType),
     transmission: str(b.transmission),
     bodyType: str(b.bodyType),

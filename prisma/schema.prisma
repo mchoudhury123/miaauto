@@ -31,6 +31,28 @@ model Car {
   bootSpace    Int? // litres
   taxPerYear   Int? // £ per year (VED)
   insuranceGroup Int? // 1–50
+  // Emissions & tax banding
+  co2Emissions Int? // g/km
+  taxBand      String? // DVLA VED band, e.g. "C"
+  // Fuel economy (mpg)
+  mpgUrban      Float? // urban / cold
+  mpgExtraUrban Float?
+  mpgCombined   Float?
+  // Performance
+  powerBhp     Int? // engine power, bhp
+  torqueNm     Int? // torque, Nm
+  topSpeedMph  Int?
+  zeroToSixty  Float? // 0–60 mph, seconds
+  // Drivetrain
+  gears        Int? // number of forward gears
+  driveType    String? // e.g. "4x2", "4x4"
+  drivingAxle  String? // Front, Rear, All
+  // Dimensions (mm) & capacity
+  lengthMm         Int?
+  widthMm          Int?
+  heightMm         Int?
+  wheelbaseMm      Int?
+  fuelTankCapacity Int? // litres
   // Specs (stored as strings; allowed values enforced in app constants)
   fuelType     String // Petrol, Diesel, Hybrid, Electric, ...
   transmission String // Manual, Automatic

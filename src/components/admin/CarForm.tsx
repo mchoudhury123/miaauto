@@ -41,6 +41,23 @@ type FormState = {
   bootSpace: string;
   taxPerYear: string;
   insuranceGroup: string;
+  co2Emissions: string;
+  taxBand: string;
+  mpgUrban: string;
+  mpgExtraUrban: string;
+  mpgCombined: string;
+  powerBhp: string;
+  torqueNm: string;
+  topSpeedMph: string;
+  zeroToSixty: string;
+  gears: string;
+  driveType: string;
+  drivingAxle: string;
+  lengthMm: string;
+  widthMm: string;
+  heightMm: string;
+  wheelbaseMm: string;
+  fuelTankCapacity: string;
   fuelType: string;
   transmission: string;
   bodyType: string;
@@ -70,6 +87,23 @@ function initialState(car?: CarWithRelations): FormState {
     bootSpace: car?.bootSpace != null ? String(car.bootSpace) : "",
     taxPerYear: car?.taxPerYear != null ? String(car.taxPerYear) : "",
     insuranceGroup: car?.insuranceGroup != null ? String(car.insuranceGroup) : "",
+    co2Emissions: car?.co2Emissions != null ? String(car.co2Emissions) : "",
+    taxBand: car?.taxBand ?? "",
+    mpgUrban: car?.mpgUrban != null ? String(car.mpgUrban) : "",
+    mpgExtraUrban: car?.mpgExtraUrban != null ? String(car.mpgExtraUrban) : "",
+    mpgCombined: car?.mpgCombined != null ? String(car.mpgCombined) : "",
+    powerBhp: car?.powerBhp != null ? String(car.powerBhp) : "",
+    torqueNm: car?.torqueNm != null ? String(car.torqueNm) : "",
+    topSpeedMph: car?.topSpeedMph != null ? String(car.topSpeedMph) : "",
+    zeroToSixty: car?.zeroToSixty != null ? String(car.zeroToSixty) : "",
+    gears: car?.gears != null ? String(car.gears) : "",
+    driveType: car?.driveType ?? "",
+    drivingAxle: car?.drivingAxle ?? "",
+    lengthMm: car?.lengthMm != null ? String(car.lengthMm) : "",
+    widthMm: car?.widthMm != null ? String(car.widthMm) : "",
+    heightMm: car?.heightMm != null ? String(car.heightMm) : "",
+    wheelbaseMm: car?.wheelbaseMm != null ? String(car.wheelbaseMm) : "",
+    fuelTankCapacity: car?.fuelTankCapacity != null ? String(car.fuelTankCapacity) : "",
     fuelType: car?.fuelType ?? "Petrol",
     transmission: car?.transmission ?? "Manual",
     bodyType: car?.bodyType ?? "Hatchback",
@@ -160,6 +194,23 @@ export default function CarForm({
         bootSpace?: number;
         taxPerYear?: number;
         motMonths?: number;
+        co2Emissions?: number;
+        taxBand?: string;
+        mpgUrban?: number;
+        mpgExtraUrban?: number;
+        mpgCombined?: number;
+        powerBhp?: number;
+        torqueNm?: number;
+        topSpeedMph?: number;
+        zeroToSixty?: number;
+        gears?: number;
+        driveType?: string;
+        drivingAxle?: string;
+        lengthMm?: number;
+        widthMm?: number;
+        heightMm?: number;
+        wheelbaseMm?: number;
+        fuelTankCapacity?: number;
       };
       const got: string[] = [];
       setForm((f) => {
@@ -196,6 +247,23 @@ export default function CarForm({
         fillNum("bootSpace", d.bootSpace, "Boot");
         fillNum("taxPerYear", d.taxPerYear, "Tax");
         fillNum("motMonths", d.motMonths, "MOT");
+        fillNum("co2Emissions", d.co2Emissions, "CO₂");
+        fillStr("taxBand", d.taxBand, "Tax band");
+        fillNum("mpgUrban", d.mpgUrban, "MPG urban");
+        fillNum("mpgExtraUrban", d.mpgExtraUrban, "MPG extra-urban");
+        fillNum("mpgCombined", d.mpgCombined, "MPG combined");
+        fillNum("powerBhp", d.powerBhp, "Power");
+        fillNum("torqueNm", d.torqueNm, "Torque");
+        fillNum("topSpeedMph", d.topSpeedMph, "Top speed");
+        fillNum("zeroToSixty", d.zeroToSixty, "0–60");
+        fillNum("gears", d.gears, "Gears");
+        fillStr("driveType", d.driveType, "Drive type");
+        fillStr("drivingAxle", d.drivingAxle, "Driving axle");
+        fillNum("lengthMm", d.lengthMm, "Length");
+        fillNum("widthMm", d.widthMm, "Width");
+        fillNum("heightMm", d.heightMm, "Height");
+        fillNum("wheelbaseMm", d.wheelbaseMm, "Wheelbase");
+        fillNum("fuelTankCapacity", d.fuelTankCapacity, "Fuel tank");
         return next;
       });
       setFilled(got);
@@ -236,6 +304,23 @@ export default function CarForm({
       taxPerYear: form.taxPerYear ? Number(form.taxPerYear) : null,
       insuranceGroup: form.insuranceGroup ? Number(form.insuranceGroup) : null,
       motMonths: form.motMonths ? Number(form.motMonths) : null,
+      co2Emissions: form.co2Emissions ? Number(form.co2Emissions) : null,
+      taxBand: form.taxBand || null,
+      mpgUrban: form.mpgUrban ? Number(form.mpgUrban) : null,
+      mpgExtraUrban: form.mpgExtraUrban ? Number(form.mpgExtraUrban) : null,
+      mpgCombined: form.mpgCombined ? Number(form.mpgCombined) : null,
+      powerBhp: form.powerBhp ? Number(form.powerBhp) : null,
+      torqueNm: form.torqueNm ? Number(form.torqueNm) : null,
+      topSpeedMph: form.topSpeedMph ? Number(form.topSpeedMph) : null,
+      zeroToSixty: form.zeroToSixty ? Number(form.zeroToSixty) : null,
+      gears: form.gears ? Number(form.gears) : null,
+      driveType: form.driveType || null,
+      drivingAxle: form.drivingAxle || null,
+      lengthMm: form.lengthMm ? Number(form.lengthMm) : null,
+      widthMm: form.widthMm ? Number(form.widthMm) : null,
+      heightMm: form.heightMm ? Number(form.heightMm) : null,
+      wheelbaseMm: form.wheelbaseMm ? Number(form.wheelbaseMm) : null,
+      fuelTankCapacity: form.fuelTankCapacity ? Number(form.fuelTankCapacity) : null,
       features,
       images: images.map((img, i) => ({ ...img, order: i })),
     };
@@ -583,6 +668,172 @@ export default function CarForm({
               </span>
             </label>
           </div>
+        </Grid>
+      </Card>
+
+      {/* Performance & economy */}
+      <Card title="Performance & economy">
+        <Grid>
+          <FieldWrap label="Power (bhp)" error={errors.powerBhp}>
+            <input
+              type="number"
+              className="input"
+              value={form.powerBhp}
+              onChange={(e) => set("powerBhp", e.target.value)}
+              placeholder="e.g. 187"
+            />
+          </FieldWrap>
+          <FieldWrap label="Torque (Nm)" error={errors.torqueNm}>
+            <input
+              type="number"
+              className="input"
+              value={form.torqueNm}
+              onChange={(e) => set("torqueNm", e.target.value)}
+              placeholder="e.g. 400"
+            />
+          </FieldWrap>
+          <FieldWrap label="0–60 mph (seconds)" error={errors.zeroToSixty}>
+            <input
+              type="number"
+              step="0.1"
+              className="input"
+              value={form.zeroToSixty}
+              onChange={(e) => set("zeroToSixty", e.target.value)}
+              placeholder="e.g. 7.1"
+            />
+          </FieldWrap>
+          <FieldWrap label="Top speed (mph)" error={errors.topSpeedMph}>
+            <input
+              type="number"
+              className="input"
+              value={form.topSpeedMph}
+              onChange={(e) => set("topSpeedMph", e.target.value)}
+              placeholder="e.g. 146"
+            />
+          </FieldWrap>
+          <FieldWrap label="MPG (combined)" error={errors.mpgCombined}>
+            <input
+              type="number"
+              step="0.1"
+              className="input"
+              value={form.mpgCombined}
+              onChange={(e) => set("mpgCombined", e.target.value)}
+              placeholder="e.g. 65.7"
+            />
+          </FieldWrap>
+          <FieldWrap label="MPG (urban)" error={errors.mpgUrban}>
+            <input
+              type="number"
+              step="0.1"
+              className="input"
+              value={form.mpgUrban}
+              onChange={(e) => set("mpgUrban", e.target.value)}
+              placeholder="e.g. 56.5"
+            />
+          </FieldWrap>
+          <FieldWrap label="MPG (extra-urban)" error={errors.mpgExtraUrban}>
+            <input
+              type="number"
+              step="0.1"
+              className="input"
+              value={form.mpgExtraUrban}
+              onChange={(e) => set("mpgExtraUrban", e.target.value)}
+              placeholder="e.g. 72.4"
+            />
+          </FieldWrap>
+          <FieldWrap label="CO₂ emissions (g/km)" error={errors.co2Emissions}>
+            <input
+              type="number"
+              className="input"
+              value={form.co2Emissions}
+              onChange={(e) => set("co2Emissions", e.target.value)}
+              placeholder="e.g. 114"
+            />
+          </FieldWrap>
+          <FieldWrap label="Tax band" error={errors.taxBand}>
+            <input
+              className="input"
+              value={form.taxBand}
+              onChange={(e) => set("taxBand", e.target.value)}
+              placeholder="e.g. C"
+            />
+          </FieldWrap>
+        </Grid>
+      </Card>
+
+      {/* Dimensions & drivetrain */}
+      <Card title="Dimensions & drivetrain">
+        <Grid>
+          <FieldWrap label="Gears" error={errors.gears}>
+            <input
+              type="number"
+              className="input"
+              value={form.gears}
+              onChange={(e) => set("gears", e.target.value)}
+              placeholder="e.g. 6"
+            />
+          </FieldWrap>
+          <FieldWrap label="Drive type" error={errors.driveType}>
+            <input
+              className="input"
+              value={form.driveType}
+              onChange={(e) => set("driveType", e.target.value)}
+              placeholder="e.g. 4x2"
+            />
+          </FieldWrap>
+          <FieldWrap label="Driving axle" error={errors.drivingAxle}>
+            <input
+              className="input"
+              value={form.drivingAxle}
+              onChange={(e) => set("drivingAxle", e.target.value)}
+              placeholder="e.g. Front"
+            />
+          </FieldWrap>
+          <FieldWrap label="Length (mm)" error={errors.lengthMm}>
+            <input
+              type="number"
+              className="input"
+              value={form.lengthMm}
+              onChange={(e) => set("lengthMm", e.target.value)}
+              placeholder="e.g. 4830"
+            />
+          </FieldWrap>
+          <FieldWrap label="Width (mm)" error={errors.widthMm}>
+            <input
+              type="number"
+              className="input"
+              value={form.widthMm}
+              onChange={(e) => set("widthMm", e.target.value)}
+              placeholder="e.g. 2078"
+            />
+          </FieldWrap>
+          <FieldWrap label="Height (mm)" error={errors.heightMm}>
+            <input
+              type="number"
+              className="input"
+              value={form.heightMm}
+              onChange={(e) => set("heightMm", e.target.value)}
+              placeholder="e.g. 1512"
+            />
+          </FieldWrap>
+          <FieldWrap label="Wheelbase (mm)" error={errors.wheelbaseMm}>
+            <input
+              type="number"
+              className="input"
+              value={form.wheelbaseMm}
+              onChange={(e) => set("wheelbaseMm", e.target.value)}
+              placeholder="e.g. 2850"
+            />
+          </FieldWrap>
+          <FieldWrap label="Fuel tank (litres)" error={errors.fuelTankCapacity}>
+            <input
+              type="number"
+              className="input"
+              value={form.fuelTankCapacity}
+              onChange={(e) => set("fuelTankCapacity", e.target.value)}
+              placeholder="e.g. 70"
+            />
+          </FieldWrap>
         </Grid>
       </Card>
 

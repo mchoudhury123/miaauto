@@ -34,6 +34,28 @@ export interface VehicleLookupResult {
   bootSpace?: number;
   taxPerYear?: number;
   motMonths?: number;
+  // Emissions & tax banding
+  co2Emissions?: number;
+  taxBand?: string;
+  // Fuel economy (mpg)
+  mpgUrban?: number;
+  mpgExtraUrban?: number;
+  mpgCombined?: number;
+  // Performance
+  powerBhp?: number;
+  torqueNm?: number;
+  topSpeedMph?: number;
+  zeroToSixty?: number;
+  // Drivetrain
+  gears?: number;
+  driveType?: string;
+  drivingAxle?: string;
+  // Dimensions (mm) & capacity
+  lengthMm?: number;
+  widthMm?: number;
+  heightMm?: number;
+  wheelbaseMm?: number;
+  fuelTankCapacity?: number;
 }
 
 export interface LookupResponse {
@@ -59,6 +81,11 @@ function toNum(v: unknown): number | undefined {
   if (v === null || v === undefined || v === "") return undefined;
   const n = Number(v);
   return Number.isFinite(n) ? n : undefined;
+}
+
+/** Round to a whole number, preserving undefined. */
+function rnd(v: number | undefined): number | undefined {
+  return v === undefined ? undefined : Math.round(v);
 }
 
 /** Map a provider fuel string to our controlled vocabulary. */
@@ -138,6 +165,57 @@ function ccToLitres(cc?: number): string | undefined {
   return `${(cc / 1000).toFixed(1)}L`;
 }
 
+// ── Defensive object search ──────────────────────────────────────────────────
+// VDG's response nests spec data under known parents (Performance, Dimensions,
+// BodyDetails…) but the exact leaf key names vary by package. Rather than
+// hard-code paths that might silently miss, we scope to the right parent object
+// and find the first key that matches a pattern. Wrong guesses just leave a
+// field blank (admin fills it in), never throw.
+function deepFindNum(obj: Record<string, any>, re: RegExp): number | undefined {
+  if (!obj || typeof obj !== "object") return undefined;
+  for (const [k, v] of Object.entries(obj)) {
+    if (re.test(k)) {
+      const n = toNum(v);
+      if (n !== undefined) return n;
+    }
+  }
+  for (const v of Object.values(obj)) {
+    if (v && typeof v === "object") {
+      const found = deepFindNum(v, re);
+      if (found !== undefined) return found;
+    }
+  }
+  return undefined;
+}
+
+function deepFindStr(obj: Record<string, any>, re: RegExp): string | undefined {
+  if (!obj || typeof obj !== "object") return undefined;
+  for (const [k, v] of Object.entries(obj)) {
+    if (re.test(k) && typeof v === "string" && v.trim() !== "") return v.trim();
+  }
+  for (const v of Object.values(obj)) {
+    if (v && typeof v === "object") {
+      const found = deepFindStr(v, re);
+      if (found !== undefined) return found;
+    }
+  }
+  return undefined;
+}
+
+/** First immediate child object whose key matches `re`. */
+function childObj(
+  obj: Record<string, any>,
+  re: RegExp,
+): Record<string, any> | undefined {
+  if (!obj || typeof obj !== "object") return undefined;
+  for (const [k, v] of Object.entries(obj)) {
+    if (re.test(k) && v && typeof v === "object") {
+      return v as Record<string, any>;
+    }
+  }
+  return undefined;
+}
+
 /** Months remaining until an ISO date (clamped at 0). */
 function monthsUntil(dateStr?: string): number | undefined {
   if (!dateStr) return undefined;
@@ -191,6 +269,15 @@ async function fetchUkvd(
     const power = md.Powertrain ?? {};
     const ice = power.IceDetails ?? {};
     const trans = power.Transmission ?? {};
+    const perf = md.Performance ?? {};
+    const dims = md.Dimensions ?? {};
+    const ved2 = vd.VehicleStatus?.VehicleExciseDutyDetails ?? {};
+
+    // Spec groups — searched defensively (leaf names vary by package).
+    const fuelEco = childObj(perf, /fueleconomy|economy|mpg/i) ?? perf;
+    const stats = childObj(perf, /statistic|performance/i) ?? perf;
+    const mph = childObj(stats, /^mph$|milesperhour/i) ?? stats;
+    const torque = childObj(perf, /torque/i) ?? perf;
 
     const litres = toNum(ice.EngineCapacityLitres);
     const engineSize =
@@ -221,6 +308,28 @@ async function fetchUkvd(
       engineSize,
       previousOwners: toNum(keepers[0]?.NumberOfPreviousKeepers),
       taxPerYear: tax !== undefined ? Math.round(tax) : undefined,
+      // Emissions & banding
+      co2Emissions: deepFindNum(ved2, /co2(?!.*band)|carbondioxide/i),
+      taxBand: deepFindStr(ved2, /^dvlaband$|vedband|^band$/i),
+      // Fuel economy
+      mpgUrban: deepFindNum(fuelEco, /urbancold|(?<!extra)urban|coldstart/i),
+      mpgExtraUrban: deepFindNum(fuelEco, /extraurban/i),
+      mpgCombined: deepFindNum(fuelEco, /combined/i),
+      // Performance
+      powerBhp: deepFindNum(power, /bhp|brakehorse|horsepower|maxpower/i),
+      torqueNm: rnd(deepFindNum(torque, /^nm$|torquenm|newton/i)),
+      topSpeedMph: rnd(deepFindNum(mph, /maxspeed|topspeed/i)),
+      zeroToSixty: deepFindNum(mph, /zerotosixty|zeroto60|0to60|sixty/i),
+      // Drivetrain
+      gears: deepFindNum(trans, /numberofgears|^gears$|gearcount/i),
+      driveType: deepFindStr(trans, /drivetype/i),
+      drivingAxle: deepFindStr(trans, /drivingaxle|driveaxle/i),
+      // Dimensions & capacity
+      lengthMm: rnd(deepFindNum(dims, /(?<!wheelbase)length|^length/i)),
+      widthMm: rnd(deepFindNum(dims, /width/i)),
+      heightMm: rnd(deepFindNum(dims, /height/i)),
+      wheelbaseMm: rnd(deepFindNum(dims, /wheelbase/i)),
+      fuelTankCapacity: rnd(deepFindNum(body, /fueltank|tankcapacity/i)),
     };
   } catch (e) {
     console.error("VDG lookup error", e);
@@ -383,6 +492,23 @@ export async function lookupVehicle(rawReg: string): Promise<LookupResponse> {
         engineSize: "2.0L",
         previousOwners: 2,
         taxPerYear: 190,
+        co2Emissions: 114,
+        taxBand: "C",
+        mpgUrban: 56.5,
+        mpgExtraUrban: 72.4,
+        mpgCombined: 65.7,
+        powerBhp: 187,
+        torqueNm: 400,
+        topSpeedMph: 146,
+        zeroToSixty: 7.1,
+        gears: 8,
+        driveType: "4x2",
+        drivingAxle: "Rear",
+        lengthMm: 4709,
+        widthMm: 1827,
+        heightMm: 1442,
+        wheelbaseMm: 2851,
+        fuelTankCapacity: 59,
       },
     };
   }
