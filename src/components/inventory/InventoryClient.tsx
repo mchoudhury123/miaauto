@@ -66,36 +66,8 @@ export default function InventoryClient({ makes, modelsByMake }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  // Hide the top filter bar when scrolling down, reveal (pinned near the top)
-  // when scrolling up — no mid-screen float, no gap.
-  const [barHidden, setBarHidden] = useState(false);
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    let lastY = window.scrollY;
-    let ticking = false;
-    const update = () => {
-      const y = window.scrollY;
-      if (y < 100) {
-        setBarHidden(false); // always show near the top of the page
-      } else if (y > lastY + 6) {
-        setBarHidden(true); // scrolling down
-      } else if (y < lastY - 6) {
-        setBarHidden(false); // scrolling up
-      }
-      lastY = y;
-      ticking = false;
-    };
-    const onScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        window.requestAnimationFrame(update);
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const fetchCars = useCallback(async (f: Filters) => {
     setLoading(true);
@@ -153,15 +125,8 @@ export default function InventoryClient({ makes, modelsByMake }: Props) {
 
   return (
     <div className="container-px py-8 lg:py-10">
-      {/* Desktop top filter bar — pins near the top; hides on scroll-down,
-          reveals on scroll-up (no mid-screen float, no gap). */}
-      <div
-        className={`z-30 mb-6 hidden transition-transform duration-300 ease-out lg:sticky lg:top-4 lg:block ${
-          barHidden
-            ? "pointer-events-none -translate-y-[calc(100%+1.5rem)]"
-            : "translate-y-0"
-        }`}
-      >
+      {/* Desktop top filter bar — static; scrolls away with the page. */}
+      <div className="relative z-30 mb-6 hidden lg:block">
         <FilterBar
           filters={filters}
           setFilters={setFilters}
