@@ -2,8 +2,8 @@
 
 export const SITE = {
   name: process.env.NEXT_PUBLIC_SITE_NAME || "MIA Automotive",
-  phone: process.env.NEXT_PUBLIC_PHONE || "07518 812530",
-  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP || "447518812530",
+  phone: process.env.NEXT_PUBLIC_PHONE || "07507 536422",
+  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP || "447507536422",
   email: process.env.NEXT_PUBLIC_EMAIL || "Miaautomotive1@gmail.com",
   address:
     process.env.NEXT_PUBLIC_ADDRESS ||
