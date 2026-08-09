@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -146,69 +147,48 @@ export default function AdminCarTable({
                         >
                           <Pencil className="h-4 w-4" />
                         </Link>
-                        <div className="relative">
-                          <button
-                            onClick={() =>
-                              setMenu((m) => (m === car.id ? null : car.id))
-                            }
-                            className="rounded-lg p-2 text-ink-500 hover:bg-ink-100 hover:text-ink-900"
-                            aria-label="More actions"
+                        <RowMenu
+                          open={menu === car.id}
+                          onToggle={() =>
+                            setMenu((m) => (m === car.id ? null : car.id))
+                          }
+                          onClose={() => setMenu(null)}
+                        >
+                          <MenuItem
+                            onClick={() => patch(car.id, { status: "available" })}
+                            active={car.status === "available"}
                           >
-                            <MoreVertical className="h-4 w-4" />
+                            Mark available
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => patch(car.id, { status: "reserved" })}
+                            active={car.status === "reserved"}
+                          >
+                            Mark reserved
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => patch(car.id, { status: "sold" })}
+                            active={car.status === "sold"}
+                          >
+                            Mark sold
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() =>
+                              patch(car.id, { featured: !car.featured })
+                            }
+                            active={car.featured}
+                          >
+                            {car.featured ? "Remove featured" : "Mark featured"}
+                          </MenuItem>
+                          <div className="my-1 border-t border-ink-100" />
+                          <button
+                            onClick={() => remove(car.id)}
+                            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            Delete car
                           </button>
-                          {menu === car.id && (
-                            <>
-                              <div
-                                className="fixed inset-0 z-10"
-                                onClick={() => setMenu(null)}
-                              />
-                              <div className="absolute right-0 z-20 mt-1 w-48 overflow-hidden rounded-xl border border-ink-100 bg-white py-1 shadow-xl">
-                                <MenuItem
-                                  onClick={() =>
-                                    patch(car.id, { status: "available" })
-                                  }
-                                  active={car.status === "available"}
-                                >
-                                  Mark available
-                                </MenuItem>
-                                <MenuItem
-                                  onClick={() =>
-                                    patch(car.id, { status: "reserved" })
-                                  }
-                                  active={car.status === "reserved"}
-                                >
-                                  Mark reserved
-                                </MenuItem>
-                                <MenuItem
-                                  onClick={() =>
-                                    patch(car.id, { status: "sold" })
-                                  }
-                                  active={car.status === "sold"}
-                                >
-                                  Mark sold
-                                </MenuItem>
-                                <MenuItem
-                                  onClick={() =>
-                                    patch(car.id, { featured: !car.featured })
-                                  }
-                                  active={car.featured}
-                                >
-                                  {car.featured
-                                    ? "Remove featured"
-                                    : "Mark featured"}
-                                </MenuItem>
-                                <div className="my-1 border-t border-ink-100" />
-                                <button
-                                  onClick={() => remove(car.id)}
-                                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                  Delete car
-                                </button>
-                              </div>
-                            </>
-                          )}
-                        </div>
+                        </RowMenu>
                       </>
                     )}
                   </div>
@@ -219,6 +199,112 @@ export default function AdminCarTable({
         </tbody>
       </table>
     </div>
+  );
+}
+
+const MENU_MARGIN = 8;
+const MENU_GAP = 4;
+
+/**
+ * Row action menu rendered into a portal with fixed positioning.
+ *
+ * The table wrapper sets overflow-hidden for its rounded corners, which would
+ * clip an absolutely-positioned menu — and rows near the bottom of a long list
+ * would open a menu that runs off-screen. Portalling to <body> escapes the
+ * clipping, and we flip the menu above the button when there isn't room below.
+ */
+function RowMenu({
+  open,
+  onToggle,
+  onClose,
+  children,
+}: {
+  open: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+
+  useEffect(() => {
+    if (!open) {
+      setPos(null);
+      return;
+    }
+    const place = () => {
+      const btn = btnRef.current?.getBoundingClientRect();
+      if (!btn) return;
+      const menu = menuRef.current?.getBoundingClientRect();
+      const h = menu?.height ?? 0;
+      const w = menu?.width ?? 192;
+
+      // Below the button by default; flip above when it would overflow, then
+      // clamp so a menu taller than the viewport still stays fully reachable.
+      let top = btn.bottom + MENU_GAP;
+      if (top + h > window.innerHeight - MENU_MARGIN) {
+        const above = btn.top - MENU_GAP - h;
+        top =
+          above >= MENU_MARGIN
+            ? above
+            : Math.max(MENU_MARGIN, window.innerHeight - MENU_MARGIN - h);
+      }
+      const left = Math.min(
+        Math.max(MENU_MARGIN, btn.right - w),
+        window.innerWidth - w - MENU_MARGIN,
+      );
+      setPos({ top, left });
+    };
+
+    place();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    // Capture phase so the menu tracks scrolling of any ancestor container.
+    window.addEventListener("scroll", place, true);
+    window.addEventListener("resize", place);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("scroll", place, true);
+      window.removeEventListener("resize", place);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open, onClose]);
+
+  return (
+    <>
+      <button
+        ref={btnRef}
+        onClick={onToggle}
+        className="rounded-lg p-2 text-ink-500 hover:bg-ink-100 hover:text-ink-900"
+        aria-label="More actions"
+        aria-haspopup="menu"
+        aria-expanded={open}
+      >
+        <MoreVertical className="h-4 w-4" />
+      </button>
+      {open &&
+        createPortal(
+          <>
+            <div className="fixed inset-0 z-40" onClick={onClose} />
+            <div
+              ref={menuRef}
+              role="menu"
+              className="fixed z-50 max-h-[80vh] w-48 overflow-y-auto rounded-xl border border-ink-100 bg-white py-1 shadow-xl"
+              style={{
+                top: pos?.top ?? 0,
+                left: pos?.left ?? 0,
+                // Hidden for the first paint, before we've measured the height.
+                visibility: pos ? "visible" : "hidden",
+              }}
+            >
+              {children}
+            </div>
+          </>,
+          document.body,
+        )}
+    </>
   );
 }
 
