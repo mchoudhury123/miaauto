@@ -106,6 +106,24 @@ model Feature {
   @@index([carId])
 }
 
+// Customer reviews copied in by hand from AutoTrader, Instagram, Google etc.
+// There's no public write path — the admin transcribes them.
+model Review {
+  id         String    @id @default(cuid())
+  author     String // reviewer's name, as shown on the source
+  source     String    @default("AutoTrader") // where it was originally left
+  rating     Int       @default(5) // 1–5 stars
+  body       String // the review text
+  carBought  String? // e.g. "BMW 3 Series", shown under the name
+  reviewedAt DateTime? // when it was left on the source, if known
+  published  Boolean   @default(true) // false hides it from the website
+
+  createdAt DateTime @default(now())
+
+  @@index([published])
+  @@index([createdAt])
+}
+
 model Enquiry {
   id      String  @id @default(cuid())
   name    String

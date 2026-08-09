@@ -9,6 +9,7 @@ import {
   Inbox,
   LogOut,
   Plus,
+  Star,
   ExternalLink,
   Menu,
   X,
@@ -20,6 +21,7 @@ const NAV = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/cars/new", label: "Add car", icon: Plus },
   { href: "/admin/enquiries", label: "Enquiries", icon: Inbox },
+  { href: "/admin/reviews", label: "Reviews", icon: Star },
 ];
 
 export default function AdminNav() {

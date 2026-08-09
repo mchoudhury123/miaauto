@@ -1,4 +1,70 @@
+import { REVIEW_SOURCES } from "./constants";
 import type { CarInput } from "./types";
+
+export interface ReviewInput {
+  author: string;
+  source: string;
+  rating: number;
+  body: string;
+  carBought: string | null;
+  reviewedAt: Date | null;
+  published: boolean;
+}
+
+/** Server-side validation + coercion for hand-entered review payloads. */
+export function validateReviewInput(body: unknown): {
+  valid: boolean;
+  errors: Record<string, string>;
+  data?: ReviewInput;
+} {
+  const errors: Record<string, string> = {};
+  const b = (body ?? {}) as Record<string, unknown>;
+  const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
+
+  const author = str(b.author);
+  if (!author) errors.author = "Reviewer name is required";
+  else if (author.length > 80) errors.author = "Name is too long";
+
+  const text = str(b.body);
+  if (!text) errors.body = "Review text is required";
+  else if (text.length > 2000) errors.body = "Review is too long (max 2000)";
+
+  const source = str(b.source) || "Other";
+  if (!(REVIEW_SOURCES as readonly string[]).includes(source)) {
+    errors.source = "Unknown source";
+  }
+
+  const rating = Math.round(Number(b.rating));
+  if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
+    errors.rating = "Rating must be 1–5";
+  }
+
+  const rawDate = str(b.reviewedAt);
+  let reviewedAt: Date | null = null;
+  if (rawDate) {
+    const d = new Date(rawDate);
+    if (Number.isNaN(d.getTime())) errors.reviewedAt = "Enter a valid date";
+    else reviewedAt = d;
+  }
+
+  const carBought = str(b.carBought);
+  if (carBought.length > 80) errors.carBought = "Too long";
+
+  if (Object.keys(errors).length > 0) return { valid: false, errors };
+  return {
+    valid: true,
+    errors: {},
+    data: {
+      author,
+      source,
+      rating,
+      body: text,
+      carBought: carBought || null,
+      reviewedAt,
+      published: b.published === undefined ? true : Boolean(b.published),
+    },
+  };
+}
 
 export interface ValidationResult {
   valid: boolean;

@@ -71,6 +71,16 @@ export const SERVICE_HISTORY = [
   "Not specified",
 ] as const;
 
+/** Where a hand-entered review was originally published. */
+export const REVIEW_SOURCES = [
+  "AutoTrader",
+  "Instagram",
+  "Google",
+  "Facebook",
+  "Word of mouth",
+  "Other",
+] as const;
+
 export const CAR_STATUS = ["available", "reserved", "sold"] as const;
 export type CarStatus = (typeof CAR_STATUS)[number];
 
