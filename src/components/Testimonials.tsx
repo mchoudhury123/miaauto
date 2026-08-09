@@ -66,9 +66,16 @@ export default async function Testimonials() {
               </blockquote>
               <figcaption className="mt-6 border-t border-ink-100 pt-5">
                 <p className="font-semibold text-ink-950">{r.author}</p>
-                <p className="text-xs uppercase tracking-wider text-green-700">
-                  {r.carBought ? `Bought a ${r.carBought}` : `via ${r.source}`}
-                </p>
+                {(r.carBought || r.showSource) && (
+                  <p className="text-xs uppercase tracking-wider text-green-700">
+                    {[
+                      r.carBought && `Bought a ${r.carBought}`,
+                      r.showSource && `via ${r.source}`,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
+                )}
               </figcaption>
             </Reveal>
           ))}

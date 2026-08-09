@@ -13,6 +13,7 @@ export default async function AdminReviewsPage() {
     id: r.id,
     author: r.author,
     source: r.source,
+    showSource: r.showSource,
     rating: r.rating,
     body: r.body,
     carBought: r.carBought,

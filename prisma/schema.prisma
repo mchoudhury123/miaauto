@@ -112,6 +112,7 @@ model Review {
   id         String    @id @default(cuid())
   author     String // reviewer's name, as shown on the source
   source     String    @default("AutoTrader") // where it was originally left
+  showSource Boolean   @default(true) // false keeps the source off the website
   rating     Int       @default(5) // 1–5 stars
   body       String // the review text
   carBought  String? // e.g. "BMW 3 Series", shown under the name

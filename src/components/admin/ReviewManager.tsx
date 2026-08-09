@@ -15,12 +15,14 @@ export type AdminReview = {
   carBought: string | null;
   reviewedAt: string | null;
   published: boolean;
+  showSource: boolean;
   createdAt: string;
 };
 
 const EMPTY = {
   author: "",
   source: REVIEW_SOURCES[0] as string,
+  showSource: true,
   rating: 5,
   body: "",
   carBought: "",
@@ -70,19 +72,17 @@ export default function ReviewManager({ initial }: { initial: AdminReview[] }) {
     }
   }
 
-  async function togglePublished(r: AdminReview) {
-    setBusy(r.id);
+  async function patchReview(id: string, patch: Partial<AdminReview>) {
+    setBusy(id);
     try {
-      const res = await fetch(`/api/reviews/${r.id}`, {
+      const res = await fetch(`/api/reviews/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ published: !r.published }),
+        body: JSON.stringify(patch),
       });
       if (res.ok) {
         setReviews((rs) =>
-          rs.map((x) =>
-            x.id === r.id ? { ...x, published: !r.published } : x,
-          ),
+          rs.map((x) => (x.id === id ? { ...x, ...patch } : x)),
         );
         router.refresh();
       }
@@ -144,6 +144,10 @@ export default function ReviewManager({ initial }: { initial: AdminReview[] }) {
                 </option>
               ))}
             </select>
+            <SourceToggle
+              on={form.showSource}
+              onClick={() => set("showSource", !form.showSource)}
+            />
           </Field>
           <Field label="Rating" error={errors.rating}>
             <StarPicker
@@ -221,9 +225,29 @@ export default function ReviewManager({ initial }: { initial: AdminReview[] }) {
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <Stars n={r.rating} />
-                      <span className="rounded-full bg-ink-100 px-2 py-0.5 text-xs font-medium text-ink-600">
+                      <button
+                        onClick={() =>
+                          patchReview(r.id, { showSource: !r.showSource })
+                        }
+                        title={
+                          r.showSource
+                            ? "Source is shown on the website — click to hide it"
+                            : "Source is hidden on the website — click to show it"
+                        }
+                        className={cn(
+                          "flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium transition",
+                          r.showSource
+                            ? "bg-ink-100 text-ink-600 hover:bg-ink-200"
+                            : "bg-ink-50 text-ink-400 line-through hover:bg-ink-100",
+                        )}
+                      >
+                        {r.showSource ? (
+                          <Eye className="h-3 w-3" />
+                        ) : (
+                          <EyeOff className="h-3 w-3" />
+                        )}
                         {r.source}
-                      </span>
+                      </button>
                       {!r.published && (
                         <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
                           Hidden
@@ -250,7 +274,9 @@ export default function ReviewManager({ initial }: { initial: AdminReview[] }) {
                     ) : (
                       <>
                         <button
-                          onClick={() => togglePublished(r)}
+                          onClick={() =>
+                            patchReview(r.id, { published: !r.published })
+                          }
                           className="rounded-lg p-2 text-ink-500 hover:bg-ink-100 hover:text-ink-900"
                           aria-label={
                             r.published
@@ -311,6 +337,33 @@ function Field({
       {children}
       {error && <span className="mt-1 block text-xs text-red-600">{error}</span>}
     </label>
+  );
+}
+
+/** Controls whether "via AutoTrader" appears under the review on the website. */
+function SourceToggle({ on, onClick }: { on: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={on}
+      className="mt-2 flex items-center gap-2 text-xs font-medium text-ink-500 hover:text-ink-900"
+    >
+      <span
+        className={cn(
+          "relative h-5 w-9 shrink-0 rounded-full transition",
+          on ? "bg-green-500" : "bg-ink-200",
+        )}
+      >
+        <span
+          className={cn(
+            "absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all",
+            on ? "left-[1.125rem]" : "left-0.5",
+          )}
+        />
+      </span>
+      {on ? "Shown on the website" : "Hidden on the website"}
+    </button>
   );
 }
 

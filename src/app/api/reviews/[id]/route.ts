@@ -4,7 +4,7 @@ import { isAuthenticated } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
-// PATCH /api/reviews/:id — show/hide on the website (admin only).
+// PATCH /api/reviews/:id — show/hide the review or its source (admin only).
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } },
@@ -14,12 +14,16 @@ export async function PATCH(
   }
   try {
     const body = (await req.json()) as Record<string, unknown>;
-    if (typeof body.published !== "boolean") {
+    const data: Record<string, boolean> = {};
+    if (typeof body.published === "boolean") data.published = body.published;
+    if (typeof body.showSource === "boolean") data.showSource = body.showSource;
+
+    if (Object.keys(data).length === 0) {
       return NextResponse.json({ error: "Nothing to update" }, { status: 400 });
     }
     const review = await prisma.review.update({
       where: { id: params.id },
-      data: { published: body.published },
+      data,
     });
     return NextResponse.json({ review });
   } catch (err) {

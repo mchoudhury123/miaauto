@@ -4,6 +4,7 @@ import type { CarInput } from "./types";
 export interface ReviewInput {
   author: string;
   source: string;
+  showSource: boolean;
   rating: number;
   body: string;
   carBought: string | null;
@@ -57,6 +58,7 @@ export function validateReviewInput(body: unknown): {
     data: {
       author,
       source,
+      showSource: b.showSource === undefined ? true : Boolean(b.showSource),
       rating,
       body: text,
       carBought: carBought || null,
