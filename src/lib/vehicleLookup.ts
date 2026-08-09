@@ -34,6 +34,8 @@ export interface VehicleLookupResult {
   bootSpace?: number;
   taxPerYear?: number;
   motMonths?: number;
+  /** Derived from Euro emissions status + fuel (London ULEZ rules). */
+  ulez?: boolean;
   // Emissions & tax banding
   co2Emissions?: number;
   taxBand?: string;
@@ -70,11 +72,20 @@ export function normalisePlate(reg: string): string {
   return reg.replace(/\s+/g, "").toUpperCase();
 }
 
+/** Marques written as acronyms — title-casing these would give "Bmw", "Mg". */
+const ACRONYMS = new Set([
+  "BMW", "MG", "DS", "VW", "SEAT", "MINI", "GMC", "RAM", "BYD", "LEVC",
+]);
+
 function titleCase(s: string): string {
   return s
+    .trim()
     .toLowerCase()
-    .replace(/\b\w/g, (c) => c.toUpperCase())
-    .trim();
+    .replace(/\b[\w']+/g, (w) => {
+      const up = w.toUpperCase();
+      if (ACRONYMS.has(up)) return up;
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    });
 }
 
 function toNum(v: unknown): number | undefined {
@@ -86,6 +97,19 @@ function toNum(v: unknown): number | undefined {
 /** Round to a whole number, preserving undefined. */
 function rnd(v: number | undefined): number | undefined {
   return v === undefined ? undefined : Math.round(v);
+}
+
+/**
+ * London ULEZ compliance, derived from the Euro emissions standard:
+ * diesel needs Euro 6, petrol Euro 4; electric always qualifies.
+ * Returns undefined when the Euro status is unknown, so we don't guess.
+ */
+function ulezCompliant(euroStatus?: string, fuel?: string): boolean | undefined {
+  if (fuel === "Electric") return true;
+  if (!euroStatus) return undefined;
+  const euro = toNum(String(euroStatus).match(/\d+/)?.[0]);
+  if (euro === undefined) return undefined;
+  return fuel === "Diesel" ? euro >= 6 : euro >= 4;
 }
 
 /** Map a provider fuel string to our controlled vocabulary. */
@@ -290,6 +314,14 @@ async function fetchUkvd(
       : [];
     const tax = toNum(ved.TwelveMonths);
 
+    const fuelType = mapFuel(power.FuelType || vi.DvlaFuelType);
+
+    // 0–60 is often absent while the metric 0–100 km/h figure is present; the
+    // two are close enough (60mph = 96.6km/h) that dealers quote them together.
+    const zeroToSixty =
+      deepFindNum(mph, /zerotosixty|zeroto60|0to60|sixty/i) ??
+      deepFindNum(stats, /zerotoonehundredkph|zeroto100kph|0to100kph/i);
+
     return {
       make:
         mi.Make || vi.DvlaMake ? titleCase(mi.Make || vi.DvlaMake) : undefined,
@@ -300,7 +332,7 @@ async function fetchUkvd(
       variant: mi.ModelVariant ? titleCase(mi.ModelVariant) : undefined,
       year: toNum(vi.YearOfManufacture),
       colour: mapColour(hist.ColourDetails?.CurrentColour),
-      fuelType: mapFuel(power.FuelType || vi.DvlaFuelType),
+      fuelType,
       transmission: mapTransmission(trans.TransmissionType),
       bodyType: mapBodyType(body.BodyStyle || vi.DvlaBodyType),
       doors: mapDoors(toNum(body.NumberOfDoors)),
@@ -308,6 +340,8 @@ async function fetchUkvd(
       engineSize,
       previousOwners: toNum(keepers[0]?.NumberOfPreviousKeepers),
       taxPerYear: tax !== undefined ? Math.round(tax) : undefined,
+      bootSpace: rnd(deepFindNum(body, /boot|luggage|payloadvolume/i)),
+      ulez: ulezCompliant(deepFindStr(md.Emissions ?? {}, /eurostatus/i), fuelType),
       // Emissions & banding
       co2Emissions: deepFindNum(ved2, /co2(?!.*band)|carbondioxide/i),
       taxBand: deepFindStr(ved2, /^dvlaband$|vedband|^band$/i),
@@ -316,10 +350,19 @@ async function fetchUkvd(
       mpgExtraUrban: deepFindNum(fuelEco, /extraurban/i),
       mpgCombined: deepFindNum(fuelEco, /combined/i),
       // Performance
-      powerBhp: deepFindNum(power, /bhp|brakehorse|horsepower|maxpower/i),
+      // Power lives under Performance.Power in the r2 schema, not Powertrain.
+      powerBhp: rnd(
+        deepFindNum(perf, /bhp|brakehorse|horsepower|maxpower/i) ??
+          deepFindNum(power, /bhp|brakehorse|horsepower|maxpower/i),
+      ),
       torqueNm: rnd(deepFindNum(torque, /^nm$|torquenm|newton/i)),
-      topSpeedMph: rnd(deepFindNum(mph, /maxspeed|topspeed/i)),
-      zeroToSixty: deepFindNum(mph, /zerotosixty|zeroto60|0to60|sixty/i),
+      // Prefer the explicit mph leaf — a bare /maxspeed/ also matches MaxSpeedKph,
+      // which would report 240km/h as "240mph".
+      topSpeedMph: rnd(
+        deepFindNum(mph, /(maxspeed|topspeed)mph/i) ??
+          deepFindNum(mph, /(maxspeed|topspeed)(?!kph)/i),
+      ),
+      zeroToSixty,
       // Drivetrain
       gears: deepFindNum(trans, /numberofgears|^gears$|gearcount/i),
       driveType: deepFindStr(trans, /drivetype/i),
@@ -425,7 +468,19 @@ async function fetchMot(
     const v = Array.isArray(data) ? data[0] : data;
     if (!v) return null;
     const firstUsed: string | undefined = v.firstUsedDate || v.registrationDate;
+
+    // Latest expiry across passed tests — motTests is newest-first in practice,
+    // but don't rely on ordering. Cars too new to have been tested carry a
+    // top-level motTestDueDate instead.
+    const tests: any[] = Array.isArray(v.motTests) ? v.motTests : [];
+    const expiries = tests
+      .filter((t) => t?.testResult === "PASSED" && t?.expiryDate)
+      .map((t) => String(t.expiryDate))
+      .sort();
+    const motExpiry = expiries[expiries.length - 1] || v.motTestDueDate;
+
     return {
+      motMonths: monthsUntil(motExpiry),
       make: v.make ? titleCase(v.make) : undefined,
       model: v.model ? titleCase(v.model) : undefined,
       fuelType: mapFuel(v.fuelType),

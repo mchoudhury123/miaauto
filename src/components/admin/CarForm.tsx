@@ -211,13 +211,18 @@ export default function CarForm({
         heightMm?: number;
         wheelbaseMm?: number;
         fuelTankCapacity?: number;
+        ulez?: boolean;
       };
+      // Build the patch synchronously — a setForm updater runs later, so any
+      // tally computed inside it would still be empty when we render the message.
       const got: string[] = [];
-      setForm((f) => {
-        const next = { ...f, regYear: plate.toUpperCase() };
+      const patch: Record<string, string | boolean> = {
+        regYear: plate.toUpperCase(),
+      };
+      {
         const fillStr = (key: keyof FormState, val: string | undefined, label: string) => {
           if (val) {
-            (next[key] as string) = val;
+            patch[key] = val;
             got.push(label);
           }
         };
@@ -227,7 +232,17 @@ export default function CarForm({
           label: string,
         ) => {
           if (val !== undefined && val !== null) {
-            (next[key] as string) = String(val);
+            patch[key] = String(val);
+            got.push(label);
+          }
+        };
+        const fillBool = (
+          key: keyof FormState,
+          val: boolean | undefined,
+          label: string,
+        ) => {
+          if (typeof val === "boolean") {
+            patch[key] = val;
             got.push(label);
           }
         };
@@ -264,8 +279,9 @@ export default function CarForm({
         fillNum("heightMm", d.heightMm, "Height");
         fillNum("wheelbaseMm", d.wheelbaseMm, "Wheelbase");
         fillNum("fuelTankCapacity", d.fuelTankCapacity, "Fuel tank");
-        return next;
-      });
+        fillBool("ulez", d.ulez, "ULEZ");
+      }
+      setForm((f) => ({ ...f, ...patch }));
       setFilled(got);
       setLookupWarnings(json.warnings || []);
       setLookupState("done");
