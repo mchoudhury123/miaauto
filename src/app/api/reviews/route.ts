@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
   const reviews = await prisma.review.findMany({
     where: admin ? {} : { published: true },
     orderBy: [{ reviewedAt: "desc" }, { createdAt: "desc" }],
+    include: { images: { orderBy: { order: "asc" } } },
   });
   return NextResponse.json({ reviews });
 }
@@ -26,7 +27,11 @@ export async function POST(req: NextRequest) {
     if (!valid || !data) {
       return NextResponse.json({ errors }, { status: 422 });
     }
-    const review = await prisma.review.create({ data });
+    const { images, ...fields } = data;
+    const review = await prisma.review.create({
+      data: { ...fields, images: { create: images } },
+      include: { images: { orderBy: { order: "asc" } } },
+    });
     return NextResponse.json({ review }, { status: 201 });
   } catch (err) {
     console.error("POST /api/reviews failed", err);

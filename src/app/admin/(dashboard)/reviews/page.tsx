@@ -6,6 +6,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminReviewsPage() {
   const reviews = await prisma.review.findMany({
     orderBy: [{ reviewedAt: "desc" }, { createdAt: "desc" }],
+    include: { images: { orderBy: { order: "asc" } } },
   });
 
   // Serialise dates for the client component.
@@ -20,6 +21,7 @@ export default async function AdminReviewsPage() {
     reviewedAt: r.reviewedAt ? r.reviewedAt.toISOString() : null,
     published: r.published,
     createdAt: r.createdAt.toISOString(),
+    images: r.images.map((i) => ({ id: i.id, url: i.url, alt: i.alt })),
   }));
 
   return (

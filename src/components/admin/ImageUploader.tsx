@@ -17,9 +17,14 @@ const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 export default function ImageUploader({
   images,
   onChange,
+  // Reviews just carry a few screenshots, with no "main" image to pick.
+  allowMain = true,
+  label = "Click to upload images",
 }: {
   images: FormImage[];
   onChange: (imgs: FormImage[]) => void;
+  allowMain?: boolean;
+  label?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -93,7 +98,7 @@ export default function ImageUploader({
           <UploadCloud className="h-7 w-7 text-ink-400" />
         )}
         <span className="text-sm font-semibold text-ink-700">
-          {uploading ? "Uploading…" : "Click to upload images"}
+          {uploading ? "Uploading…" : label}
         </span>
         <span className="text-xs text-ink-400">
           JPG, PNG, WEBP or AVIF — up to 8MB each
@@ -113,8 +118,9 @@ export default function ImageUploader({
       {images.length > 0 && (
         <>
           <p className="mt-4 text-xs text-ink-400">
-            Drag to reorder. Click the star to set the main image (shown first
-            on listings).
+            Drag to reorder.
+            {allowMain &&
+              " Click the star to set the main image (shown first on listings)."}
           </p>
           <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {images.map((img, idx) => (
@@ -129,7 +135,9 @@ export default function ImageUploader({
                 }}
                 className={cn(
                   "group relative aspect-[4/3] overflow-hidden rounded-xl border bg-ink-900",
-                  img.isMain ? "border-green-500 ring-2 ring-green-500" : "border-ink-200",
+                  allowMain && img.isMain
+                    ? "border-green-500 ring-2 ring-green-500"
+                    : "border-ink-200",
                 )}
               >
                 <Image
@@ -142,25 +150,27 @@ export default function ImageUploader({
                 <div className="absolute left-1 top-1 rounded bg-ink-900/60 p-1 text-white/70">
                   <GripVertical className="h-3.5 w-3.5" />
                 </div>
-                {img.isMain && (
+                {allowMain && img.isMain && (
                   <span className="absolute bottom-1 left-1 rounded bg-green-500 px-1.5 py-0.5 text-[10px] font-bold text-ink-900">
                     MAIN
                   </span>
                 )}
                 <div className="absolute right-1 top-1 flex gap-1 opacity-0 transition group-hover:opacity-100">
-                  <button
-                    type="button"
-                    onClick={() => setMain(idx)}
-                    className="rounded bg-ink-900/70 p-1.5 text-white hover:bg-green-500 hover:text-ink-900"
-                    aria-label="Set as main image"
-                  >
-                    <Star
-                      className={cn(
-                        "h-3.5 w-3.5",
-                        img.isMain && "fill-current",
-                      )}
-                    />
-                  </button>
+                  {allowMain && (
+                    <button
+                      type="button"
+                      onClick={() => setMain(idx)}
+                      className="rounded bg-ink-900/70 p-1.5 text-white hover:bg-green-500 hover:text-ink-900"
+                      aria-label="Set as main image"
+                    >
+                      <Star
+                        className={cn(
+                          "h-3.5 w-3.5",
+                          img.isMain && "fill-current",
+                        )}
+                      />
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={() => remove(idx)}

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Star, Quote } from "lucide-react";
 import Reveal from "./Reveal";
 import { prisma } from "@/lib/prisma";
@@ -10,6 +11,7 @@ export default async function Testimonials() {
     where: { published: true },
     orderBy: [{ reviewedAt: "desc" }, { createdAt: "desc" }],
     take: 6,
+    include: { images: { orderBy: { order: "asc" } } },
   });
 
   if (reviews.length === 0) return null;
@@ -64,6 +66,35 @@ export default async function Testimonials() {
               <blockquote className="mt-5 font-display text-lg italic leading-relaxed text-ink-700">
                 “{r.body}”
               </blockquote>
+
+              {r.images.length > 0 && (
+                <div
+                  className={
+                    r.images.length === 1
+                      ? "mt-5"
+                      : "mt-5 grid grid-cols-2 gap-2"
+                  }
+                >
+                  {r.images.map((img) => (
+                    <div
+                      key={img.id}
+                      className={
+                        r.images.length === 1
+                          ? "relative aspect-[4/3] overflow-hidden rounded-2xl bg-ink-100"
+                          : "relative aspect-square overflow-hidden rounded-xl bg-ink-100"
+                      }
+                    >
+                      <Image
+                        src={img.url}
+                        alt={img.alt || `Photo from ${r.author}'s review`}
+                        fill
+                        sizes="(min-width: 768px) 30vw, 90vw"
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
               <figcaption className="mt-6 border-t border-ink-100 pt-5">
                 <p className="font-semibold text-ink-950">{r.author}</p>
                 {(r.carBought || r.showSource) && (

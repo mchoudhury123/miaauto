@@ -119,10 +119,25 @@ model Review {
   reviewedAt DateTime? // when it was left on the source, if known
   published  Boolean   @default(true) // false hides it from the website
 
+  images ReviewImage[]
+
   createdAt DateTime @default(now())
 
   @@index([published])
   @@index([createdAt])
+}
+
+// Screenshots of the original review, or photos the customer sent in.
+model ReviewImage {
+  id    String @id @default(cuid())
+  url   String
+  alt   String?
+  order Int    @default(0)
+
+  reviewId String
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@index([reviewId])
 }
 
 model Enquiry {

@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Star, Trash2, Loader2, Plus, Eye, EyeOff } from "lucide-react";
+import ImageUploader, { type FormImage } from "./ImageUploader";
 import { REVIEW_SOURCES } from "@/lib/constants";
 import { cn, formatDate } from "@/lib/utils";
 
@@ -17,6 +19,7 @@ export type AdminReview = {
   published: boolean;
   showSource: boolean;
   createdAt: string;
+  images: { id: string; url: string; alt: string | null }[];
 };
 
 const EMPTY = {
@@ -27,6 +30,7 @@ const EMPTY = {
   body: "",
   carBought: "",
   reviewedAt: "",
+  images: [] as FormImage[],
 };
 
 export default function ReviewManager({ initial }: { initial: AdminReview[] }) {
@@ -184,6 +188,21 @@ export default function ReviewManager({ initial }: { initial: AdminReview[] }) {
           </Field>
         </div>
 
+        <div className="mt-4">
+          <Field label="Pictures (optional)" error={errors.images}>
+            <p className="mb-2 text-xs text-ink-400">
+              A screenshot of the original review, or photos the customer sent
+              in. These show under the review on the homepage.
+            </p>
+            <ImageUploader
+              images={form.images}
+              onChange={(imgs) => set("images", imgs)}
+              allowMain={false}
+              label="Click to upload pictures"
+            />
+          </Field>
+        </div>
+
         <button
           type="submit"
           disabled={saving}
@@ -311,6 +330,29 @@ export default function ReviewManager({ initial }: { initial: AdminReview[] }) {
                 <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-ink-700">
                   {r.body}
                 </p>
+
+                {r.images.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {r.images.map((img) => (
+                      <a
+                        key={img.id}
+                        href={img.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="relative h-20 w-20 overflow-hidden rounded-lg border border-ink-200 bg-ink-900"
+                        title="Open full size"
+                      >
+                        <Image
+                          src={img.url}
+                          alt={img.alt || `Picture from ${r.author}`}
+                          fill
+                          sizes="80px"
+                          className="object-cover"
+                        />
+                      </a>
+                    ))}
+                  </div>
+                )}
               </li>
             ))}
           </ul>

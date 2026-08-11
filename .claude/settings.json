@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -NoProfile -Command '$p = \\(Get-NetTCPConnection -State Listen -LocalPort 3000 -ErrorAction SilentlyContinue\\).OwningProcess; if \\($p\\) { Stop-Process -Id $p -Force; '\\\\''stopped '\\\\'' + $p } else { '\\\\''no server running'\\\\'' }')",
+      "Bash(curl -s -c __TRACKED_VAR__/cj.txt -X POST http://localhost:3000/api/auth/login -H 'Content-Type: application/json' -d '{\"password\":\"mia-admin-2026\"}' --max-time 180 -o /dev/null -w 'login:%{http_code}\\\\n')",
+      "Bash(curl -s -b __TRACKED_VAR__/cj.txt -X POST http://localhost:3000/api/reviews -H 'Content-Type: application/json' -d '{\"author\":\"Photo Test\",\"source\":\"Instagram\",\"rating\":5,\"body\":\"Review with pictures.\",\"carBought\":\"Golf GTI\",\"images\":[{\"url\":\"https://example.com/a.jpg\"},{\"url\":\"https://example.com/b.jpg\"}]}' --max-time 120)",
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>{const r=JSON.parse\\(s\\).review;console.log\\('id',r.id\\);console.log\\('images',JSON.stringify\\(r.images.map\\(i=>\\({url:i.url,order:i.order}\\)\\)\\)\\)}\\)\")",
+      "Bash(node -e ' *)"
+    ]
+  }
+}

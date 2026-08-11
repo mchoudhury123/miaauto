@@ -10,6 +10,7 @@ export interface ReviewInput {
   carBought: string | null;
   reviewedAt: Date | null;
   published: boolean;
+  images: { url: string; alt: string | null; order: number }[];
 }
 
 /** Server-side validation + coercion for hand-entered review payloads. */
@@ -51,6 +52,15 @@ export function validateReviewInput(body: unknown): {
   const carBought = str(b.carBought);
   if (carBought.length > 80) errors.carBought = "Too long";
 
+  // Images arrive as already-uploaded Blob URLs from the client uploader.
+  const images = (Array.isArray(b.images) ? b.images : [])
+    .map((img, i) => {
+      const o = (img ?? {}) as Record<string, unknown>;
+      return { url: str(o.url), alt: str(o.alt) || null, order: i };
+    })
+    .filter((img) => img.url !== "");
+  if (images.length > 12) errors.images = "Up to 12 images per review";
+
   if (Object.keys(errors).length > 0) return { valid: false, errors };
   return {
     valid: true,
@@ -64,6 +74,7 @@ export function validateReviewInput(body: unknown): {
       carBought: carBought || null,
       reviewedAt,
       published: b.published === undefined ? true : Boolean(b.published),
+      images,
     },
   };
 }

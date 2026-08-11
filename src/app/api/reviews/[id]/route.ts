@@ -44,7 +44,12 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
   }
   try {
-    await prisma.review.delete({ where: { id: params.id } });
+    // Remove images explicitly so the delete never trips a foreign-key
+    // constraint, matching how cars are deleted.
+    await prisma.$transaction([
+      prisma.reviewImage.deleteMany({ where: { reviewId: params.id } }),
+      prisma.review.delete({ where: { id: params.id } }),
+    ]);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("DELETE /api/reviews/:id failed", err);
